@@ -5,6 +5,9 @@
 
 Node.JS module that adds mutiplexing to [Primus](https://github.com/3rd-Eden/primus).
 
+
+## This is still in development, not released yet. soon!!!
+
 ## Instalation
 
 ```
