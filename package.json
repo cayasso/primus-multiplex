@@ -31,6 +31,7 @@
     "mocha": "*",
     "expect.js": "*",
     "primus": "git://github.com/3rd-Eden/primus.git",
+    "primus-rooms": "0.1.x",
     "socket.io-client": "~0.9.16",
     "engine.io-client": "~0.6.3",
     "sockjs-client-node": "0.0.0",
