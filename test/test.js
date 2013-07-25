@@ -168,7 +168,6 @@ describe('primus-multiplex', function (){
       });
 
       var cl = client(srv, primus);
-
       var ca = cl.channel('a');
       var cb = cl.channel('b');
       var cc = cl.channel('c');
@@ -263,6 +262,88 @@ describe('primus-multiplex', function (){
       cl3.write('hi');
 
     });
+  });
+
+  it('should be able to disconnect from a channel', function(done){
+
+    var srv = http();
+    var primus = server(srv, opts);
+    var a = primus.channel('a');
+
+    srv.listen(function(){
+
+      a.on('connection', function (spark) {
+        spark.on('data', function (data){
+          done();
+        });
+      });
+
+      var cl = client(srv, primus);
+      var cla = cl.channel('a');
+      cla.write('hi');
+      cla.end();
+      cla.write('hi again');
+    });
+  });
+
+  it('should be able to destroy a channel', function(done){
+
+    var srv = http();
+    var primus = server(srv, opts);
+    var a = primus.channel('a');
+
+    srv.listen(function(){
+
+      a.on('connection', function (spark) {
+        spark.write('hi');
+        spark.destroy();
+        spark.write('hi');
+      });
+
+      var cl = client(srv, primus);
+      var cla = cl.channel('a');
+
+      cla.on('data', function (data){
+        done();
+      });
+    });
+  });
+
+  it('should emit close event on connection destroy', function(done){
+
+    var srv = http();
+    var primus = server(srv, opts);
+    var a = primus.channel('a');
+
+    srv.listen(function(){
+      a.on('connection', function (spark) {
+        spark.on('close', function () {
+          done();
+        });
+        spark.destroy();
+      });
+    });
+
+    var cl = client(srv, primus);
+    var cla = cl.channel('a');
+  });
+
+  it('should explicitly cancel connection', function(done){
+
+    var srv = http();
+    var primus = server(srv, opts);
+    var a = primus.channel('a');
+
+    srv.listen(function(){
+      a.on('connection', function (spark) {
+        spark.end(null, function () {
+          done();
+        });
+      });
+    });
+
+    var cl = client(srv, primus);
+    var cla = cl.channel('a');
   });
 
 });
