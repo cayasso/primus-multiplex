@@ -1,7 +1,7 @@
 {
   "name": "primus-multiplex",
   "version": "0.1.0",
-  "description": "Simple emitter wrapper for Primus",
+  "description": "Simple multiplexing for Primus",
   "author": "Jonathan Brumley <cayasso@gmail.com>",
   "homepage": "https://github.com/cayasso/primus-multiplex",
   "main": "index.js",
