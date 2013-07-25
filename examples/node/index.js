@@ -1,17 +1,13 @@
 var multiplex = require('../../');
-var rooms = require('primus-rooms');
 var Primus = require('primus');
 var http = require('http');
 var server = http.createServer();
 
-
 // THE SERVER
 var primus = new Primus(server, { transformer: 'sockjs', parser: 'JSON' });
 
-// Add room functionality to primus
-primus.use('rooms', rooms);
+// Add multiplex functionality to primus
 primus.use('multiplex', multiplex);
-//primus.save('test.js');
 
 var ann = primus.channel('ann');
 var bob = primus.channel('bob');
@@ -31,7 +27,7 @@ bob.on('connection', function(spark){
 // Server stuff
 tom.on('connection', function(spark){
   console.log('connected to tom');
-  
+
   spark.on('data', function () {
     console.log('data from tom as client', arguments);
   });
@@ -63,11 +59,6 @@ function setClient () {
   bob.on('BOB', function (msg) {
     console.log('[BOB] ===> ' + msg);
   });
-
-
-  /*socket.on('data', function (data) {
-    console.log('===>', data);
-  });*/
 
   setInterval(function () {
     tom.write('hi');
