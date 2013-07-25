@@ -32,6 +32,9 @@ bob.on('connection', function(spark){
 tom.on('connection', function(spark){
   console.log('connected to tom');
   
+  spark.on('data', function () {
+    console.log('data from tom as client', arguments);
+  });
 
   setInterval(function () {
     spark.write('hoola tom');
@@ -66,9 +69,9 @@ function setClient () {
     console.log('===>', data);
   });*/
 
-  setTimeout(function () {
-    //socket.write([3, 8, 'ann']);
-  }, 5000);
+  setInterval(function () {
+    tom.write('hi');
+  }, 3000);
 
 }
 
