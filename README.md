@@ -5,9 +5,6 @@
 
 Node.JS module that adds mutiplexing to [Primus](https://github.com/3rd-Eden/primus).
 
-
-## This is still in development, not released yet. soon!!!
-
 ## Instalation
 
 ```
@@ -39,6 +36,10 @@ server.listen(8080);
 ```
 
 ## API
+
+## TODO
+
+Add documentation, in the mean time check the example and the tests.
 
 ## Run tests
 
