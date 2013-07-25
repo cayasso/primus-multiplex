@@ -336,7 +336,7 @@ describe('primus-multiplex', function (){
 
     srv.listen(function(){
       a.on('connection', function (spark) {
-        spark.end(null, function () {
+        spark.end(function () {
           done();
         });
       });

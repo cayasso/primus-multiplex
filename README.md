@@ -26,20 +26,94 @@ var primus = new Primus(server, { transformer: 'sockjs', parser: 'JSON' });
 // add multiplex to Primus
 primus.use('multiplex', multiplex);
 
+var news = primus.channel('news');
+news.on('connection', function (spark) {
+  
+  spark.write('hi from the news channel');
+
+  spark.on('data', function (data) {
+    spark.write(data);
+  });
+
+});
+
+var sport = primus.channel('sport');
+sport.on('connection', function (spark) {
+  
+  spark.write('hi from the sport channel');
+
+  spark.on('data', function (data) {
+    spark.write(data);
+  });
+
+});
+
 server.listen(8080);
 ```
 
 ### On the Client
 
 ```
+var primus = Primus.connect('ws://localhost:8080');
+
+// Connect to channels
+var news = primus.channel('news');
+var sport = primus.channel('sport');
+
+// Send message
+news.write('hi news channel');
+sport.write('hi sport channel');
 
 ```
 
 ## API
 
-## TODO
+### Server
 
-Add documentation, in the mean time check the example and the tests.
+#### primus#channel(name)
+
+Create a new channel.
+
+```
+var news = primus.channel('news');
+news.on('connection', fn);
+```
+
+#### spark#end([fn])
+
+End the connection.
+
+```
+news.on('connection', function (spark) {
+  spark.end(fn);
+});
+```
+
+#### spark#destroy()
+
+Destroy the connection and remove all listeners.
+
+```
+news.on('connection', function (spark) {
+  spark.destroy();
+});
+```
+
+#### spark.on('close', fn)
+Triggers when the destroy method is called.
+
+### Client
+
+#### spark#end()
+
+Disconnect from a channel.
+
+```
+var news = primus.channel('news');
+news.end();
+```
+
+## Protocol
 
 ## Run tests
 
