@@ -115,11 +115,40 @@ news.end();
 
 ## Protocol
 
+Each message consists of an array of four parts: `type` (`Number`), `id` (`String`),
+`topic` (`String`), and `payload` (`Mixed`).
+
+There are three valid message types:
+
+ * `Packet#MESSAGE` (`0`)  send a message with `payload` on a `topic`.
+ * `Packet#SUBSCRIBE` (`1`) subscribe to a given `topic`.
+ * `Packet#UNSUBSCRIBE` (`2`) unsubscribe from a `topic`.
+
+The `topic` identifies a channel registered on the server side.
+The `id` represent a unique connection identifier generated on the client side. 
+
+Each request to subscribe to a topic from a given client has a unique id.
+This makes it possible for a single client to open multiple independent
+channel connection to a single server-side service.
+
+Invalid messages are simply ignored.
+
+It's important to notice that the namespace is shared between both
+parties and it is not a good idea to use the same topic names on the
+client and on the server side. Both parties may express a will to
+unsubscribe itself or other party from a topic.
+
 ## Run tests
 
 ```
 $ make test
 ```
+
+## Inspiration
+
+This library was inspire by this great post:
+
+* https://www.rabbitmq.com/blog/2012/02/23/how-to-compose-apps-using-websockets/
 
 ## License
 
