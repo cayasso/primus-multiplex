@@ -61,7 +61,7 @@ function setClient () {
   });
 
   bob.on('BOB', function (msg) {
-    console.log('[TOM] ===> ' + msg);
+    console.log('[BOB] ===> ' + msg);
   });
 
 
