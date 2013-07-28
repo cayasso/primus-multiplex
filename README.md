@@ -15,7 +15,7 @@ $ npm install primus-multiplex
 
 ### On the Server
 
-```
+```javascript
 var Primus = require('primus');
 var multiplex = require('primus-multiplex');
 var server = require('http').createServer();
@@ -53,7 +53,7 @@ server.listen(8080);
 
 ### On the Client
 
-```
+```javascript
 var primus = Primus.connect('ws://localhost:8080');
 
 // Connect to channels
@@ -74,7 +74,7 @@ sport.write('hi sport channel');
 
 Create a new channel.
 
-```
+```javascript
 var news = primus.channel('news');
 news.on('connection', fn);
 ```
@@ -83,7 +83,7 @@ news.on('connection', fn);
 
 End the connection.
 
-```
+```javascript
 news.on('connection', function (spark) {
   spark.end(fn);
 });
@@ -93,7 +93,7 @@ news.on('connection', function (spark) {
 
 Destroy the connection and remove all listeners.
 
-```
+```javascript
 news.on('connection', function (spark) {
   spark.destroy();
 });
@@ -108,7 +108,7 @@ Triggers when the destroy method is called.
 
 Disconnect from a channel.
 
-```
+```javascript
 var news = primus.channel('news');
 news.end();
 ```
