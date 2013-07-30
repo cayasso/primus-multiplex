@@ -1,6 +1,6 @@
 {
   "name": "primus-multiplex",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Simple multiplexing for Primus",
   "author": "Jonathan Brumley <cayasso@gmail.com>",
   "homepage": "https://github.com/cayasso/primus-multiplex",
@@ -13,7 +13,7 @@
     "url": "git://github.com/cayasso/primus-multiplex.git"
   },
   "keywords": [
-    "emitter",
+    "multiplex",
     "realtime",
     "websocket",
     "engine.io",
