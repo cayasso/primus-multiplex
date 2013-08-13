@@ -3,7 +3,7 @@ var multiplex = require('../');
 var Emitter = require('events').EventEmitter;
 var http = require('http').Server;
 var expect = require('expect.js');
-var opts = { transformer: 'sockjs', parser: 'JSON' };
+var opts = { transformer: 'websockets', parser: 'JSON' };
 
 // creates the client
 function client(srv, primus, port){
@@ -101,22 +101,26 @@ describe('primus-multiplex', function (){
     var srv = http();
     var primus = server(srv, opts);
     var a = primus.channel('a');
+
     srv.listen(function(){
-      primus.on('connection', function (spark) {
-        spark.on('data', function (data) {
-          done('Should ignore data');
+      primus.on('connection', function (spark1) {
+        spark1.on('data', function (data) {
+          if ('hi' === data)
+            done('Should ignore data');
         });
+
         a.on('connection', function (spark) {
           spark.on('data', function (data) {
             expect(data).to.be('hi');
             done();
-          });          
+          });
         });
       });
       var cl = client(srv, primus);
       var ca = cl.channel('a');
       ca.write('hi');
     });
+
   });
 
   it('should only receive data from corresponding client', function(done){
@@ -309,7 +313,7 @@ describe('primus-multiplex', function (){
     });
   });
 
-  it('should emit close event on connection destroy', function(done){
+  it('should emit endevent on connection destroy', function(done){
 
     var srv = http();
     var primus = server(srv, opts);
@@ -317,7 +321,7 @@ describe('primus-multiplex', function (){
 
     srv.listen(function(){
       a.on('connection', function (spark) {
-        spark.on('close', function () {
+        spark.on('end', function () {
           done();
         });
         spark.destroy();

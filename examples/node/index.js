@@ -4,7 +4,7 @@ var http = require('http');
 var server = http.createServer();
 
 // THE SERVER
-var primus = new Primus(server, { transformer: 'sockjs', parser: 'JSON' });
+var primus = new Primus(server, { transformer: 'websockets', parser: 'JSON' });
 
 // Add multiplex functionality to primus
 primus.use('multiplex', multiplex);
@@ -16,12 +16,14 @@ var tom = primus.channel('tom');
 // Server stuff
 ann.on('connection', function(spark){
   console.log('connected to ann');
+  spark.write('hi Ann');
   // testing regular
 });
 
 // Server stuff
 bob.on('connection', function(spark){
   console.log('connected to bob');
+  spark.write('hi Bob');
 });
 
 // Server stuff
@@ -33,7 +35,7 @@ tom.on('connection', function(spark){
   });
 
   setInterval(function () {
-    spark.write('hoola tom');
+    spark.write('hola Tom');
   }, 3000);
 });
 
@@ -56,7 +58,7 @@ function setClient () {
     console.log('[TOM] ===> ' + msg);
   });
 
-  bob.on('BOB', function (msg) {
+  bob.on('data', function (msg) {
     console.log('[BOB] ===> ' + msg);
   });
 
