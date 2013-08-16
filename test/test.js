@@ -346,4 +346,23 @@ describe('primus-multiplex', function (){
     var cla = cl.channel('a');
   });
 
+  it('should decode a compound payload', function (done) {
+    var srv = http();
+    var primus = server(srv, opts);
+    var a = primus.channel('a');
+
+    srv.listen(function(){
+      a.on('connection', function (spark) {
+        spark.on('data', function (data) {
+          expect(data).to.have.property('hello', 'world');
+          done();
+        });
+      });
+    });
+
+    var cl = client(srv, primus);
+    var cla = cl.channel('a');
+    cla.write({ hello: 'world' });
+  });
+
 });
