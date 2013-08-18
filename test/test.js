@@ -1,5 +1,6 @@
+var PrimusMultiplex = require('../');
 var Primus = require('primus');
-var multiplex = require('../');
+//var PrimusEmitter = require('primus-emitter');
 var Emitter = require('events').EventEmitter;
 var http = require('http').Server;
 var expect = require('expect.js');
@@ -15,7 +16,9 @@ function client(srv, primus, port){
 // creates the server
 function server(srv, opts) {
   // use multiplex plugin
-  return Primus(srv, opts).use('multiplex', multiplex);
+  return Primus(srv, opts)
+  .use('multiplex', PrimusMultiplex);
+  //.use('emitter', PrimusEmitter);
 }
 
 describe('primus-multiplex', function (){
@@ -23,6 +26,7 @@ describe('primus-multiplex', function (){
   it('should have required methods', function (done){
     var srv = http();
     var primus = server(srv, opts);
+    //primus.save('test.js');
     srv.listen(function(){
       var cl = client(srv, primus);
       expect(primus.channel).to.be.a('function');
@@ -290,30 +294,45 @@ describe('primus-multiplex', function (){
     });
   });
 
-  it('should be able to destroy a channel', function(done){
-
+  it('should `emit` close event when destroying a channel', function(done){
     var srv = http();
     var primus = server(srv, opts);
     var a = primus.channel('a');
-
     srv.listen(function(){
-
       a.on('connection', function (spark) {
-        spark.write('hi');
-        spark.destroy();
-        spark.write('hi');
+        a.destroy();
       });
-
+      a.on('close', function (spark) {
+        done();
+      });
       var cl = client(srv, primus);
       var cla = cl.channel('a');
+    });
+  });
 
+  it('should not allow sending data after channel is destroyed', function(done){
+    var srv = http();
+    var primus = server(srv, opts);
+    var a = primus.channel('a');
+    srv.listen(function(){
+      a.on('connection', function (spark) {
+        spark.write('hi');
+        a.destroy();
+        spark.write('hi');
+        spark.write('hi');
+        spark.write('hi');
+        spark.write('hi');
+        spark.write('hi');
+      });
+      var cl = client(srv, primus);
+      var cla = cl.channel('a');
       cla.on('data', function (data){
         done();
       });
     });
   });
 
-  it('should emit endevent on connection destroy', function(done){
+  it('should emit `end` event on server when channel is destroyed', function(done){
 
     var srv = http();
     var primus = server(srv, opts);
@@ -324,7 +343,7 @@ describe('primus-multiplex', function (){
         spark.on('end', function () {
           done();
         });
-        spark.destroy();
+        spark.end();
       });
     });
 
@@ -332,7 +351,24 @@ describe('primus-multiplex', function (){
     var cla = cl.channel('a');
   });
 
-  it('should explicitly cancel connection', function(done){
+  it('should emit `disconnection` event when ending a `connection` from client', function(done){
+
+    var srv = http();
+    var primus = server(srv, opts);
+    var a = primus.channel('a');
+
+    srv.listen(function(){
+      a.on('disconnection', function (spark) {
+        done();
+      });
+    });
+
+    var cl = client(srv, primus);
+    var cla = cl.channel('a');
+    cla.end();
+  });
+
+  it('should emit `end` event when `channel` is destroyed', function(done){
 
     var srv = http();
     var primus = server(srv, opts);
@@ -340,9 +376,49 @@ describe('primus-multiplex', function (){
 
     srv.listen(function(){
       a.on('connection', function (spark) {
-        spark.end(function () {
+        a.destroy();
+      });
+    });
+
+    var cl = client(srv, primus);
+    var cla = cl.channel('a');
+    cla.on('end', function () {
+      done();
+    });
+  });
+
+  it('should decode a compound payload', function (done) {
+    var srv = http();
+    var primus = server(srv, opts);
+    var a = primus.channel('a');
+
+    srv.listen(function(){
+      a.on('connection', function (spark) {
+        spark.on('data', function (data) {
+          expect(data).to.have.property('hello', 'world');
           done();
         });
+      });
+    });
+
+    var cl = client(srv, primus);
+    var cla = cl.channel('a');
+    cla.write({ hello: 'world' });
+  });
+
+  it('should emit `end` event on server when main connection is destroyed', function(done){
+
+    var srv = http();
+    var primus = server(srv, opts);
+    var a = primus.channel('a');
+
+    srv.listen(function(){
+      a.on('connection', function (spark) {
+        primus.destroy();
+      });
+
+      a.on('close', function () {
+        done();
       });
     });
 

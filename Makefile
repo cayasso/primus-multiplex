@@ -5,4 +5,7 @@ test:
 		--reporter $(REPORTER) \
 		--bail
 
+build:
+	@node bin/build
+
 .PHONY: test

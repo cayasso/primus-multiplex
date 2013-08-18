@@ -28,7 +28,7 @@ bob.on('connection', function(spark){
 
 // Server stuff
 tom.on('connection', function(spark){
-  console.log('connected to tom');
+  console.log('connected to tom', spark.id);
 
   spark.on('data', function () {
     console.log('data from tom as client', arguments);
@@ -64,7 +64,7 @@ function setClient () {
 
   setInterval(function () {
     tom.write('hi');
-  }, 3000);
+  }, 1000);
 
 }
 
