@@ -34,6 +34,7 @@
     "primus": "git://github.com/3rd-Eden/primus.git",
     "ws": "~0.4.27",
     "embedder": "0.0.2",
-    "primus-emitter": "0.2.x"
+    "primus-emitter": "1.0.x",
+    "primus-rooms": "1.0.x"
   }
 }
