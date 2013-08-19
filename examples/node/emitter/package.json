@@ -1,5 +1,5 @@
 {
-  "name": "primus-emitter-test",
+  "name": "primus-multiplex-emitter-test",
   "version": "0.1.0",
   "author": "Jonathan Brumley <cayasso@gmail.com>",
   "main": "index.js",
@@ -8,7 +8,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "primus": "1.0.x"    
+    "primus": "1.0.x",
+    "primus-emitter": "0.2.x"  
   },
   "devDependencies": {
     "ws": "~0.4.27"

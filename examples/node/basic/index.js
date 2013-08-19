@@ -1,4 +1,4 @@
-var multiplex = require('../../');
+var Multiplex = require('../../../');
 var Primus = require('primus');
 var http = require('http');
 var server = http.createServer();
@@ -7,7 +7,8 @@ var server = http.createServer();
 var primus = new Primus(server, { transformer: 'websockets', parser: 'JSON' });
 
 // Add multiplex functionality to primus
-primus.use('multiplex', multiplex);
+primus
+.use('multiplex', Multiplex);
 
 var ann = primus.channel('ann');
 var bob = primus.channel('bob');
