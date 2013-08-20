@@ -159,6 +159,8 @@ This library was inspire by this great post:
 
 ## Other plugins
 
+PrimusMultiplex is compatible with the following plugins, check the [examples](https://github.com/cayasso/primus-multiplex/tree/master/examples/node) to see more.
+
  * [primus-rooms](https://github.com/cayasso/primus-rooms)
  * [primus-emitter](https://github.com/cayasso/primus-emitter)
 
