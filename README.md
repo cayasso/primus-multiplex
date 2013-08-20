@@ -64,6 +64,13 @@ var sport = primus.channel('sport');
 news.write('hi news channel');
 sport.write('hi sport channel');
 
+// Receive message
+news.on('data', function (msg) {
+    console.log(msg);
+});
+sport.on('data', function (msg) {
+    console.log(msg);
+});
 ```
 
 ## API
