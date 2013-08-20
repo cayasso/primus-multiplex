@@ -1,4 +1,4 @@
-# Primus Emitter
+# Primus Multiplex
 
 [![Build Status](https://travis-ci.org/cayasso/primus-multiplex.png?branch=master)](https://travis-ci.org/cayasso/primus-multiplex)
 [![NPM version](https://badge.fury.io/js/primus-multiplex.png)](http://badge.fury.io/js/primus-multiplex)
