@@ -5,7 +5,7 @@ var PrimusRooms = require('primus-rooms');
 var Emitter = require('events').EventEmitter;
 var http = require('http').Server;
 var expect = require('expect.js');
-var opts = { transformer: 'websockets', parser: 'JSON' };
+var opts = { transformer: 'browserchannel', parser: 'JSON' };
 
 // creates the client
 function client(srv, primus, port){
