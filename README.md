@@ -94,7 +94,7 @@ Broadcast a message to all connected `Sparks` in the channel.
 news.write(message);
 ```
 
-#### channel.forEach(message)
+#### channel.forEach(fn)
 
 Iterare over all `Sparks` in a channel. This could also be used 
 for broadcasting to specific `Sparks`.
@@ -107,7 +107,7 @@ news.forEach(function (spark, id, connections) {
 
 #### channel.destroy()
 
-Destroy the cahnnel removing all clients and listeners.
+Destroy the channel removing all 'Sparks' and event listeners.
 This will emit a `close` event.
 
 ```javascript
@@ -141,13 +141,30 @@ news.on('connection', function (spark) {
 
 ### Client
 
-#### spark#end()
+#### spark.write(message)
+
+Send a message to the server.
+
+```javascript
+news.write('hi server');
+```
+
+#### spark.end()
 
 Disconnect from a channel.
 
 ```javascript
 var news = primus.channel('news');
 news.end();
+```
+
+#### spark.on('data', fn)
+Receive `data` from the server form the corresponding `channel`.
+
+```javascript
+spark.on('data', function(msg) {
+  console.log('Received message from news channel', msg);
+});
 ```
 
 ## Protocol
