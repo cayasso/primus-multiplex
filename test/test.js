@@ -376,7 +376,47 @@ describe('primus-multiplex', function (){
     var cl = client(srv, primus);
     var cla = cl.channel('a');
   });
- 
+
+  it('should emit reconnect and reconnecting event when the main connection closes unexcpectingly', function (done) {
+    var srv = http();
+    var primus = server(srv, opts);
+    var a = primus.channel('a');
+    var reconnected = false;
+    var reconnecting = false;
+
+    srv.listen(function(){
+      a.on('connection', function (spark) {
+        if (!reconnected) {
+          reconnected = true;
+
+          //
+          // Forcefully kill a connection to trigger a reconnect
+          //
+          switch (opts.transformer.toLowerCase()) {
+            case 'socket.io':
+              primus.transformer.service.transports[spark.conn.id].close();
+            break;
+
+            default:
+              spark.conn.emit('outgoing::end');
+          }
+        }
+      });
+    });
+
+    var cl = client(srv, primus);
+    var cla = cl.channel('a');
+
+    cla.on('reconnect', function () {
+      expect(reconnecting).to.be(true);
+      done();
+    });
+
+    cla.on('reconnecting', function () {
+      reconnecting = true;
+    });
+  });
+
   describe('primus-emitter', function () {
 
     it('should play nice with emitter', function(done){
