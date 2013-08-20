@@ -86,6 +86,17 @@ var news = primus.channel('news');
 news.on('connection', fn);
 ```
 
+
+#### primus#channel#destroy()
+
+Destroy the cahnnel by removing all clients and listeners.
+
+```javascript
+news.on('connection', function (spark) {
+  spark.destroy();
+});
+```
+
 #### spark#end([fn])
 
 End the connection.
@@ -93,16 +104,6 @@ End the connection.
 ```javascript
 news.on('connection', function (spark) {
   spark.end(fn);
-});
-```
-
-#### spark#destroy()
-
-Destroy the connection and remove all listeners.
-
-```javascript
-news.on('connection', function (spark) {
-  spark.destroy();
 });
 ```
 
