@@ -77,19 +77,37 @@ sport.on('data', function (msg) {
 
 ### Server
 
-#### primus#channel(name)
+#### primus.channel(name)
 
-Create a new channel.
+Create a new channel on the server.
 
 ```javascript
 var news = primus.channel('news');
 news.on('connection', fn);
 ```
 
+#### channel.write(message)
 
-#### channel#destroy()
+Broadcast a message to all connected `Sparks` in the channel.
 
-Destroy the cahnnel by removing all clients and listeners.
+```javascript
+news.write(message);
+```
+
+#### channel.forEach(message)
+
+Iterare over all `Sparks` in a channel. This could also be used 
+for broadcasting to specific `Sparks`.
+
+```javascript
+news.forEach(function (spark, id, connections) {
+  spark.write('message');
+});
+```
+
+#### channel.destroy()
+
+Destroy the cahnnel removing all clients and listeners.
 This will emit a `close` event.
 
 ```javascript
@@ -111,7 +129,7 @@ news.on('close', function () {
 });
 ```
 
-#### spark#end([fn])
+#### spark.end([fn])
 
 End the connection.
 
