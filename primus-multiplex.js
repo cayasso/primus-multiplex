@@ -129,8 +129,7 @@ Spark.prototype.initialise = function () {
   }
 
   function reemit(ev) {
-    spark.conn.on(ev, function () {
-      //console.log([ev].concat(slice.call(arguments)));
+    spark.conn.on(ev, function onevs() {
       spark.emit.apply(spark, [ev].concat(slice.call(arguments)));
     });
   }
