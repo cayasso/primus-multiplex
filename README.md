@@ -87,13 +87,27 @@ news.on('connection', fn);
 ```
 
 
-#### primus#channel#destroy()
+#### channel#destroy()
 
 Destroy the cahnnel by removing all clients and listeners.
+This will emit a `close` event.
 
 ```javascript
 news.on('connection', function (spark) {
-  spark.destroy();
+  news.destroy();
+});
+```
+
+#### channel.on('close', fn)
+Triggers when the destroy method is called.
+
+```javascript
+news.on('connection', function (spark) {
+  news.destroy();
+});
+
+news.on('close', function () {
+  console.log('channel was destroyed');  
 });
 ```
 
@@ -106,9 +120,6 @@ news.on('connection', function (spark) {
   spark.end(fn);
 });
 ```
-
-#### spark.on('close', fn)
-Triggers when the destroy method is called.
 
 ### Client
 
