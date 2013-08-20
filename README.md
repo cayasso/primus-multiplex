@@ -140,7 +140,7 @@ unsubscribe itself or other party from a topic.
 
 ## Run tests
 
-```
+``` bash
 $ make test
 ```
 
