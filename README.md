@@ -150,6 +150,11 @@ This library was inspire by this great post:
 
 * https://www.rabbitmq.com/blog/2012/02/23/how-to-compose-apps-using-websockets/
 
+## Other plugins
+
+ * [primus-rooms](https://github.com/cayasso/primus-rooms)
+ * [primus-emitter](https://github.com/cayasso/primus-emitter)
+
 ## License
 
 (The MIT License)
