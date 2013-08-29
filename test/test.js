@@ -36,7 +36,7 @@ describe('primus-multiplex', function (){
     });
   });
 
-  it('should return EventEmitter instances', function (done){
+  it('should return EventEmitter instances', function (){
     var srv = http();
     var primus = server(srv, opts);
     var a = primus.channel('a');
@@ -45,7 +45,6 @@ describe('primus-multiplex', function (){
     expect(a).to.be.a(Emitter);
     expect(b).to.be.a(Emitter);
     expect(c).to.be.a(Emitter);
-    done();
   });
 
   it('should stablish a connection', function(done){
@@ -361,7 +360,8 @@ describe('primus-multiplex', function (){
     cla.write({ hello: 'world' });
   });
 
-  it('should emit `end` event on server when main connection is destroyed', function(done){
+  it('should emit `close` event on server when main connection is destroyed', function(done){
+    
     var srv = http();
     var primus = server(srv, opts);
     var a = primus.channel('a');
@@ -377,7 +377,54 @@ describe('primus-multiplex', function (){
     var cla = cl.channel('a');
   });
 
-  it('should emit reconnect and reconnecting event when the main connection closes unexcpectingly', function (done) {
+  it('should emit `disconnection` event on all connected sparks when main connection closes on client', function (done) {
+    var srv = http();
+    var primus = server(srv, opts);
+    var a = primus.channel('a');
+    var b = primus.channel('b');
+    var count = 0;
+    var ids = [];
+
+    srv.listen(function(){
+      primus.on('connection', function (conn) {
+        a.on('connection', function (spark) {
+          ++count;
+          ids.push(spark.id);
+        });
+        b.on('connection', function (spark) {
+          ++count;
+          ids.push(spark.id);
+          if (count >= 4) {
+            // Forcefully kill a connection to trigger a reconnect
+            switch (opts.transformer.toLowerCase()) {
+              case 'socket.io':
+                primus.transformer.service.transports[conn.id].close();
+              break;
+
+              default:
+                conn.emit('outgoing::end');
+            }
+          }
+        });
+        a.on('disconnection', function (spark) {
+          expect(ids).to.contain(spark.id);
+          if (!--count) done();
+        });
+        b.on('disconnection', function (spark) {
+          expect(ids).to.contain(spark.id);
+          if (!--count) done();
+        });
+      });
+    });
+
+    var cl = client(srv, primus);
+    var cla1 = cl.channel('a');
+    var cla2 = cl.channel('a');
+    var clb1 = cl.channel('b');
+    var clb2 = cl.channel('b');
+  });
+
+  it('should emit `reconnect` and `reconnecting` event when the main connection closes unexcpectingly', function (done) {
     var srv = http();
     var primus = server(srv, opts);
     var a = primus.channel('a');
@@ -389,9 +436,7 @@ describe('primus-multiplex', function (){
         if (!reconnected) {
           reconnected = true;
 
-          //
           // Forcefully kill a connection to trigger a reconnect
-          //
           switch (opts.transformer.toLowerCase()) {
             case 'socket.io':
               primus.transformer.service.transports[spark.conn.id].close();
