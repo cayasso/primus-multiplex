@@ -12,7 +12,7 @@ build:
 	@./node_modules/.bin/browserbuild \
 		--main $(MAIN) \
 		--global $(GLOBAL) \
-		--basepath lib/client/ `find lib -name '*.js'` \
+		--basepath lib/client/ `find lib/client -name '*.js'` \
 		> $(FILE)
 
 .PHONY: test build
