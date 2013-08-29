@@ -27,7 +27,7 @@ describe('primus-multiplex', function (){
   it('should have required methods', function (done){
     var srv = http();
     var primus = server(srv, opts);
-    //primus.save('test.js');
+    primus.save('test.js');
     srv.listen(function(){
       var cl = client(srv, primus);
       expect(primus.channel).to.be.a('function');
@@ -384,25 +384,34 @@ describe('primus-multiplex', function (){
     var b = primus.channel('b');
     var count = 0;
     var ids = [];
+    reconnected = false;
 
     srv.listen(function(){
       primus.on('connection', function (conn) {
         a.on('connection', function (spark) {
-          ++count;
-          ids.push(spark.id);
+          if (!reconnected) {
+            ++count;
+            ids.push(spark.id);
+          }
         });
         b.on('connection', function (spark) {
-          ++count;
-          ids.push(spark.id);
-          if (count >= 4) {
-            // Forcefully kill a connection to trigger a reconnect
-            switch (opts.transformer.toLowerCase()) {
-              case 'socket.io':
-                primus.transformer.service.transports[conn.id].close();
-              break;
 
-              default:
-                conn.emit('outgoing::end');
+          if (!reconnected) {
+            ++count;
+            ids.push(spark.id);
+            if (count >= 4) {
+
+              // Forcefully kill a connection to trigger a reconnect
+              switch (opts.transformer.toLowerCase()) {
+                case 'socket.io':
+                  primus.transformer.service.transports[conn.id].close();
+                break;
+
+                default:
+                  conn.emit('outgoing::end');
+              }
+
+              reconnected = true;
             }
           }
         });
