@@ -8,9 +8,13 @@ var expect = require('expect.js');
 var opts = { transformer: 'websockets', parser: 'JSON' };
 
 // creates the client
-function client(srv, primus, port){
-  var addr = srv.address();
-  var url = 'http://' + addr.address + ':' + (port || addr.port);
+function client(srv, primus, port, address){
+  var addr = srv.address() || {};
+
+  address = address || addr.address;
+  port = port || addr.port;
+
+  var url = 'http://' + address + ':' + port;
   return new primus.Socket(url);
 }
 
@@ -27,7 +31,7 @@ describe('primus-multiplex', function (){
   it('should have required methods', function (done){
     var srv = http();
     var primus = server(srv, opts);
-    primus.save('test.js');
+    //primus.save('test.js');
     srv.listen(function(){
       var cl = client(srv, primus);
       expect(primus.channel).to.be.a('function');
@@ -59,6 +63,25 @@ describe('primus-multiplex', function (){
       var cl = client(srv, primus);
       var ca = cl.channel('a');
     });
+  });
+
+  it('should only emit one connection when client is started before server', function(done){
+    this.timeout(0);
+    var srv = http();
+    var primus = server(srv, opts);
+    
+
+    setTimeout(function () {
+      var a = primus.channel('a');
+      a.on('connection', function (spark) {
+        done();
+      });
+      srv.listen(8080);
+    }, 100);
+    
+
+    var cl = client(srv, primus, 8080, 'localhost');
+    var ca = cl.channel('a');
   });
 
   it('should allow sending message from client to server', function(done){
