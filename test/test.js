@@ -665,6 +665,54 @@ describe('primus-multiplex', function (){
         });
       });
 
+      var cl = client(srv, primus);
+      var c1a = cl.channel('a');
+      var c2a = cl.channel('a');
+      var c3a = cl.channel('a');
+
+      c1a.write('r1');
+      c2a.write('r2');
+      c3a.write('r3');
+
+      c1a.on('data', function (msg) {
+        expect(msg).to.be('hi');
+        if (!--count) done();
+      });
+
+      c2a.on('data', function (msg) {
+        expect(msg).to.be('hi');
+        if (!--count) done();
+      });
+
+      c3a.on('data', function (msg) {
+        expect(msg).to.be('hi');
+        if (!--count) done();
+      });
+
+      setTimeout(function () {
+        var me = cl.channel('a');
+        me.write('me');
+      }, 0);
+
+    });
+
+    it('should allow broadcasting a message to multiple clients with channel `room` method', function(done){
+      var srv = http();
+      var primus = server(srv, opts);
+      var a = primus.channel('a');
+      var count = 3;
+
+      srv.listen(function(){
+        a.on('connection', function (spark) {
+          spark.on('data', function (room) {
+            if ('me' === room) {
+              a.room('r1 r2 r3').write('hi');
+            } else {
+              spark.join(room);
+            }
+          });
+        });
+      });
 
       var cl = client(srv, primus);
       var c1a = cl.channel('a');
