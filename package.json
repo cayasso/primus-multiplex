@@ -1,6 +1,6 @@
 {
   "name": "primus-multiplex",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Simple multiplexing for Primus",
   "author": "Jonathan Brumley <cayasso@gmail.com>",
   "homepage": "https://github.com/cayasso/primus-multiplex",
@@ -36,6 +36,6 @@
     "ws": "~0.4.27",
     "browserbuild": "*",
     "primus-emitter": "1.0.x",
-    "primus-rooms": "1.0.x"
+    "primus-rooms": "1.1.x"
   }
 }
