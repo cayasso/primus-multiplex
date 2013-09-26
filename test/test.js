@@ -827,6 +827,207 @@ describe('primus-multiplex', function (){
 
     });
 
+    it('should get all clients synchronously if no callback is provided using channel method', function(done){
+      var ids = [];
+      var srv = http();
+      var primus = server(srv, opts);
+      var a = primus.channel('a');
+      var count = 0;
+
+      srv.listen(function(){
+        a.on('connection', function(spark){
+          ids.push(spark.id);
+          a.join(spark, 'room1');
+
+          if (3 === ++count) {
+            var clients = a.in('room1').clients();
+            expect(clients).to.be.eql(ids);
+            srv.close();
+            done();
+          }
+        });
+
+        var cl = client(srv, primus);
+        cl.channel('a');
+        cl.channel('a');
+        cl.channel('a');
+      });
+    });
+
+    it('should join spark to a room using channel method', function(done){
+      var srv = http();
+      var primus = server(srv, opts);
+      var a = primus.channel('a');
+
+      srv.listen(function(){
+        a.on('connection', function(spark){
+          a.join(spark, 'room1', function () {
+            spark.room('room1').clients(function (err, clients) {
+              expect(!!~clients.indexOf(spark.id)).to.eql(true);
+              srv.close();
+              done();
+            });
+          });
+        });
+        var cl = client(srv, primus);
+        cl.channel('a');
+      });
+    });
+
+    it('should remove spark form room using channel method', function(done){
+      var srv = http();
+      var primus = server(srv, opts);
+      var a = primus.channel('a');
+
+      srv.listen(function(){
+        a.on('connection', function(spark){
+          a.join(spark, 'room1', function () {
+            a.leave(spark, 'room1', function () {
+              spark.room('room1').clients(function (err, clients) {
+                expect(!!~clients.indexOf(spark.id)).to.eql(false);
+                srv.close();
+                done();
+              });
+            });
+          });
+        });
+        var cl = client(srv, primus);
+        cl.channel('a');
+      });
+    });
+
+    it('should trigger `joinroom` event when joining room', function(done){
+      var srv = http();
+      var primus = server(srv, opts);
+      var a = primus.channel('a');
+
+      srv.listen(function(){
+        a.on('connection', function(spark){
+          spark.join('room1');
+          spark.on('joinroom', function (room) {
+            expect(room).to.be.eql('room1');
+            srv.close();
+            done();
+          });
+        });
+        var cl = client(srv, primus);
+        cl.channel('a');
+      });
+    });
+
+    it('should trigger `leaveroom` event when leaving room', function(done){
+      var srv = http();
+      var primus = server(srv, opts);
+      var a = primus.channel('a');
+
+      srv.listen(function(){
+        a.on('connection', function(spark){
+          spark.join('room1', function () {
+            spark.leave('room1');
+            spark.on('leaveroom', function (room) {
+              expect(room).to.be.eql('room1');
+              srv.close();
+              done();
+            });
+          });
+        });
+        var cl = client(srv, primus);
+        cl.channel('a');
+      });
+    });
+
+    it('should trigger `leaveallrooms` events on client disconnect', function(done){
+      this.timeout(0);
+      var srv = http();
+      var primus = server(srv, opts);
+      var a = primus.channel('a');
+
+      srv.listen(function(){
+        a.on('connection', function(spark){
+          spark.join('a');
+          spark.on('leaveallrooms', function (rooms) {
+            expect(rooms).to.be.eql(['a']);
+            srv.close();
+            done();
+          });
+          spark.write('end');
+        });
+
+        var cl = client(srv, primus);
+        var cla = cl.channel('a');
+
+        cla.on('data', function (data) {
+          if ('end' === data) cla.end();
+        });
+      });
+    });
+
+    it('should trigger `joinroom` event when joining room using channel join method', function(done){
+      var srv = http();
+      var primus = server(srv, opts);
+      var a = primus.channel('a');
+
+      srv.listen(function(){
+        a.on('connection', function(spark){
+          a.join(spark, 'room1');
+          a.on('joinroom', function (room, socket) {
+            expect(room).to.be.eql('room1');
+            expect(spark).to.be.eql(socket);
+            srv.close();
+            done();
+          });
+        });
+        var cl = client(srv, primus);
+        var cla = cl.channel('a');
+      });
+    });
+
+    it('should trigger `leaveroom` event when leaving room using channel leave method', function(done){
+      var srv = http();
+      var primus = server(srv, opts);
+      var a = primus.channel('a');
+      srv.listen(function(){
+        a.on('connection', function(spark){
+          a.join(spark, 'room1', function () {
+            a.leave(spark, 'room1');
+            a.on('leaveroom', function (room, socket) {
+              expect(room).to.be.eql('room1');
+              expect(spark).to.be.eql(socket);
+              srv.close();
+              done();
+            });
+          });
+        });
+        var cl = client(srv, primus);
+        var cla = cl.channel('a');
+      });
+    });
+
+    it('should trigger `leaveallrooms` events on client disconnect when listening on channel', function(done){
+      this.timeout(0);
+      var srv = http();
+      var primus = server(srv, opts);
+      var a = primus.channel('a');
+      srv.listen(function(){
+        a.on('connection', function(spark){
+          a.join(spark, 'a');
+          a.on('leaveallrooms', function (rooms, socket) {
+            expect(rooms).to.be.eql(['a']);
+            expect(spark).to.be.eql(socket);
+            srv.close();
+            done();
+          });
+          spark.write('end');
+        });
+
+        var cl = client(srv, primus);
+        var cla = cl.channel('a');
+
+        cla.on('data', function (data) {
+          if ('end' === data) cla.end();
+        });
+      });
+    });
   });
 
 });
