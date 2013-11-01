@@ -210,6 +210,7 @@ PrimusMultiplex is compatible with the following plugins, check the [examples](h
 
  * [primus-rooms](https://github.com/cayasso/primus-rooms)
  * [primus-emitter](https://github.com/cayasso/primus-emitter)
+ * [primus-resource](https://github.com/cayasso/primus-resource)
 
 ## License
 
