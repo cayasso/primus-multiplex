@@ -21,8 +21,8 @@ function client(srv, primus, port, address){
 // creates the server
 function server(srv, opts) {
   return Primus(srv, opts)  
-  .use('multiplex', PrimusMultiplex)
   .use('emitter', PrimusEmitter)
+  .use('multiplex', PrimusMultiplex)  
   .use('rooms', PrimusRooms);
 }
 
@@ -31,7 +31,7 @@ describe('primus-multiplex', function (){
   it('should have required methods', function (done){
     var srv = http();
     var primus = server(srv, opts);
-    //primus.save('test.js');
+    primus.save('test.js');
     srv.listen(function(){
       var cl = client(srv, primus);
       expect(primus.channel).to.be.a('function');
@@ -515,7 +515,7 @@ describe('primus-multiplex', function (){
       var a = primus.channel('a');
       srv.listen(function(){
         a.on('connection', function (spark) {
-          spark.emit('msg', { hi: 'hello' });
+          spark.send('msg', { hi: 'hello' });
         });
       });
       var cl = client(srv, primus);
@@ -540,7 +540,7 @@ describe('primus-multiplex', function (){
       });
       var cl = client(srv, primus);
       var cla = cl.channel('a');
-      cla.emit('msg', { hi: 'hello' });
+      cla.send('msg', { hi: 'hello' });
     });
 
     it('should support ack on the client', function(done){
@@ -557,7 +557,7 @@ describe('primus-multiplex', function (){
       });
       var cl = client(srv, primus);
       var cla = cl.channel('a');
-      cla.emit('msg', { hi: 'hello' }, function (msg) {
+      cla.send('msg', { hi: 'hello' }, function (msg) {
         expect(msg).to.be('thanks');
         done();
       });
@@ -569,7 +569,7 @@ describe('primus-multiplex', function (){
       var a = primus.channel('a');
       srv.listen(function(){
         a.on('connection', function (spark) {
-          spark.emit('msg', { hi: 'hello' }, function (msg) {
+          spark.send('msg', { hi: 'hello' }, function (msg) {
             expect(msg).to.be('thanks');
             done();
           });
@@ -585,7 +585,7 @@ describe('primus-multiplex', function (){
 
   });
 
-  describe('primus-rooms', function () {
+  /*describe('primus-rooms', function () {
 
     it('should allow joining a room', function(done){
       var srv = http();
@@ -757,7 +757,7 @@ describe('primus-multiplex', function (){
 
           spark.on('msg', function (msg) {
             if ('broadcast' === msg) {
-              spark.room('r1').emit('msg', 'hi');
+              spark.room('r1').send('msg', 'hi');
             }
           });
         });
@@ -768,10 +768,10 @@ describe('primus-multiplex', function (){
         expect(msg).to.be('hi');
         done();
       });
-      c1a.emit('join', 'r1');
+      c1a.send('join', 'r1');
       setTimeout(function () {
         var me = cl.channel('a');
-        me.emit('msg', 'broadcast');
+        me.send('msg', 'broadcast');
       }, 0);
 
     });
@@ -790,7 +790,7 @@ describe('primus-multiplex', function (){
 
           spark.on('msg', function (msg) {
             if ('broadcast' === msg) {
-              spark.room('r1 r2 r3').emit('msg', 'hi');
+              spark.room('r1 r2 r3').send('msg', 'hi');
             }
           });
         });
@@ -801,9 +801,9 @@ describe('primus-multiplex', function (){
       var c2a = cl.channel('a');
       var c3a = cl.channel('a');
 
-      c1a.emit('join', 'r1');
-      c2a.emit('join', 'r2');
-      c3a.emit('join', 'r3');
+      c1a.send('join', 'r1');
+      c2a.send('join', 'r2');
+      c3a.send('join', 'r3');
 
       c1a.on('msg', function (msg) {
         expect(msg).to.be('hi');
@@ -822,7 +822,7 @@ describe('primus-multiplex', function (){
 
       setTimeout(function () {
         var me = cl.channel('a');
-        me.emit('msg', 'broadcast');
+        me.send('msg', 'broadcast');
       }, 0);
 
     });
@@ -1028,6 +1028,6 @@ describe('primus-multiplex', function (){
         });
       });
     });
-  });
+  });*/
 
 });

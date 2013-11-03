@@ -8,7 +8,9 @@ var app = express();
 var server = require('http').createServer(app);
 
 var primus = new Primus(server, { transformer: 'websockets' });
+primus.use('emitter', 'primus-emitter');
 primus.use('multiplex', Multiplex);
+
 
 server.listen(port);
 
@@ -20,4 +22,10 @@ primus.on('connection', function(connection) {
 
 apiChannel.on('connection', function(spark) {
   console.log('API channel: connection %s', spark.id);
+
+  //spark.emit('news', 'HOOOOOOOOOO LLLLLLLLAAAAA');
+  apiChannel.emit('news', { hola: 'mundo' });
+
 });
+
+require('./client');
