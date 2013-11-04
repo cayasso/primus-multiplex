@@ -65,24 +65,22 @@ describe('primus-multiplex', function (){
     });
   });
 
-  /*it('should only emit one connection when client is started before server', function(done){
+  it('should only emit one connection when client is started before server', function(done){
     this.timeout(0);
     var srv = http();
     var primus = server(srv, opts);
-    
 
     setTimeout(function () {
       var a = primus.channel('a');
       a.on('connection', function (spark) {
-        //done();
+        done();
       });
       srv.listen(8080);
-    }, 100);
-    
+    }, 10);
 
     var cl = client(srv, primus, 8080, 'localhost');
     var ca = cl.channel('a');
-  });*/
+  });
 
   it('should allow sending message from client to server', function(done){
     this.timeout(0);
