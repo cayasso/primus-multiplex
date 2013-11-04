@@ -22,7 +22,7 @@ function client(srv, primus, port, address){
 function server(srv, opts) {
   return Primus(srv, opts)  
   .use('emitter', PrimusEmitter)
-  .use('multiplex', PrimusMultiplex)  
+  .use('multiplex', PrimusMultiplex)
   .use('rooms', PrimusRooms);
 }
 
@@ -31,7 +31,7 @@ describe('primus-multiplex', function (){
   it('should have required methods', function (done){
     var srv = http();
     var primus = server(srv, opts);
-    primus.save('test.js');
+    //primus.save('test.js');
     srv.listen(function(){
       var cl = client(srv, primus);
       expect(primus.channel).to.be.a('function');
