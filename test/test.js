@@ -21,9 +21,9 @@ function client(srv, primus, port, address){
 // creates the server
 function server(srv, opts) {
   return Primus(srv, opts)  
+  .use('rooms', PrimusRooms)
   .use('emitter', PrimusEmitter)
-  .use('multiplex', PrimusMultiplex)
-  .use('rooms', PrimusRooms);
+  .use('multiplex', PrimusMultiplex);
 }
 
 describe('primus-multiplex', function (){
@@ -583,6 +583,25 @@ describe('primus-multiplex', function (){
       });
     });
 
+    it('should work if emitter is initialized after multiplex', function(done){
+      var srv = http();
+      var primus = Primus(srv, opts)
+        .use('multiplex', PrimusMultiplex)
+        .use('emitter', PrimusEmitter);
+
+      var a = primus.channel('a');
+      srv.listen(function(){
+        a.on('connection', function (spark) {
+          spark.send('msg', { hi: 'hello' });
+        });
+      });
+      var cl = client(srv, primus);
+      var cla = cl.channel('a');
+      cla.on('msg', function (msg) {
+        expect(msg).to.be.eql({ hi: 'hello' });
+        done();
+      });
+    });
   });
 
   describe('primus-rooms', function () {
@@ -1027,6 +1046,24 @@ describe('primus-multiplex', function (){
           if ('end' === data) cla.end();
         });
       });
+    });
+
+    it('should work if rooms is initialized after multiplex', function(done){
+      var srv = http();
+      var primus = Primus(srv, opts)
+        .use('multiplex', PrimusMultiplex)
+        .use('rooms', PrimusRooms);
+
+      var a = primus.channel('a');
+      srv.listen(function(){
+        a.on('connection', function (spark) {
+          spark.join('a', function () {
+            done();
+          });
+        });
+      });
+      var cl = client(srv, primus);
+      var cla = cl.channel('a');
     });
   });
 

@@ -19,14 +19,14 @@ var tom = primus.channel('tom');
 // Server stuff
 ann.on('connection', function(spark){
   console.log('connected to ann');
-  spark.emit('hi', 'hi Ann');
+  spark.send('hi', 'hi Ann');
   // testing regular
 });
 
 // Server stuff
 bob.on('connection', function(spark){
   console.log('connected to bob');
-  spark.emit('hi', 'hi Bob');
+  spark.send('hi', 'hi Bob');
 });
 
 // Server stuff
@@ -38,7 +38,7 @@ tom.on('connection', function(spark){
   });
 
   setInterval(function () {
-    spark.emit('hi', 'hola Tom');
+    spark.send('hi', 'hola Tom');
   }, 3000);
 });
 
@@ -66,7 +66,7 @@ function setClient () {
   });
 
   setInterval(function () {
-    tom.emit('hi', 'hi');
+    tom.send('hi', 'hi');
   }, 1000);
 
 }
