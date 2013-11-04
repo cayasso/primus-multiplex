@@ -21,8 +21,6 @@ a.on('connection', function(spark){
   // testing regular
   spark.on('data', function(room){
 
-    
-
     // broadcasting to rooms
     if (room === 'me') {
       console.log('------- ------- -------');
@@ -75,5 +73,5 @@ setTimeout(function () {
 }, 0);
 
 server.listen(process.env.PORT || 8080, function(){
-  console.log('\033[96mlistening on localhost:9000 \033[39m');
+  console.log('\033[96mlistening on localhost: \033[39m');
 });
