@@ -585,7 +585,7 @@ describe('primus-multiplex', function (){
 
   });
 
-  /*describe('primus-rooms', function () {
+  describe('primus-rooms', function () {
 
     it('should allow joining a room', function(done){
       var srv = http();
@@ -1028,6 +1028,6 @@ describe('primus-multiplex', function (){
         });
       });
     });
-  });*/
+  });
 
 });
