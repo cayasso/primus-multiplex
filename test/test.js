@@ -20,7 +20,7 @@ function client(srv, primus, port, address){
 
 // creates the server
 function server(srv, opts) {
-  return Primus(srv, opts)  
+  return Primus(srv, opts)
   .use('rooms', PrimusRooms)
   .use('emitter', PrimusEmitter)
   .use('multiplex', PrimusMultiplex);
@@ -31,7 +31,7 @@ describe('primus-multiplex', function (){
   it('should have required methods', function (done){
     var srv = http();
     var primus = server(srv, opts);
-    primus.save('test.js');
+    //primus.save('test.js');
     srv.listen(function(){
       var cl = client(srv, primus);
       expect(primus.channel).to.be.a('function');
@@ -1064,5 +1064,109 @@ describe('primus-multiplex', function (){
       var cla = cl.channel('a');
     });
   });
+
+describe('primus-emitter + primus-rooms', function () {
+  it('should allow broadcasting a message to multiple rooms with emitter from channel;', function(done){
+    var srv = http();
+    var primus = server(srv, opts);
+    var a = primus.channel('a');
+    var count = 3;
+
+    srv.listen(function(){
+      a.on('connection', function (spark) {
+        spark.on('join', function (room) {
+          spark.join(room);
+        });
+
+        spark.on('msg', function (msg) {
+          if ('broadcast' === msg) {
+            a.room('r1 r2 r3').send('msg', 'hi');
+          }
+        });
+      });
+    });
+
+    var cl = client(srv, primus);
+    var c1a = cl.channel('a');
+    var c2a = cl.channel('a');
+    var c3a = cl.channel('a');
+
+    c1a.send('join', 'r1');
+    c2a.send('join', 'r2');
+    c3a.send('join', 'r3');
+
+    c1a.on('msg', function (msg) {
+      expect(msg).to.be('hi');
+      if (!--count) done();
+    });
+
+    c2a.on('msg', function (msg) {
+      expect(msg).to.be('hi');
+      if (!--count) done();
+    });
+
+    c3a.on('msg', function (msg) {
+      expect(msg).to.be('hi');
+      if (!--count) done();
+    });
+
+    setTimeout(function () {
+      var me = cl.channel('a');
+      me.send('msg', 'broadcast');
+    }, 0);
+
+  });
+
+it('should allow broadcasting a message to multiple rooms with emitter from client;', function(done){
+    var srv = http();
+    var primus = server(srv, opts);
+    var a = primus.channel('a');
+    var count = 3;
+
+    srv.listen(function(){
+      a.on('connection', function (spark) {
+        spark.on('join', function (room) {
+          spark.join(room);
+        });
+
+        spark.on('msg', function (msg) {
+          if ('broadcast' === msg) {
+            spark.room('r1 r2 r3').send('msg', 'hi');
+          }
+        });
+      });
+    });
+
+    var cl = client(srv, primus);
+    var c1a = cl.channel('a');
+    var c2a = cl.channel('a');
+    var c3a = cl.channel('a');
+
+    c1a.send('join', 'r1');
+    c2a.send('join', 'r2');
+    c3a.send('join', 'r3');
+
+    c1a.on('msg', function (msg) {
+      expect(msg).to.be('hi');
+      if (!--count) done();
+    });
+
+    c2a.on('msg', function (msg) {
+      expect(msg).to.be('hi');
+      if (!--count) done();
+    });
+
+    c3a.on('msg', function (msg) {
+      expect(msg).to.be('hi');
+      if (!--count) done();
+    });
+
+    setTimeout(function () {
+      var me = cl.channel('a');
+      me.send('msg', 'broadcast');
+    }, 0);
+
+  });
+});
 
 });
