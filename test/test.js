@@ -76,7 +76,7 @@ describe('primus-multiplex', function (){
         done();
       });
       srv.listen(8080);
-    }, 10);
+    }, 0);
 
     var cl = client(srv, primus, 8080, 'localhost');
     var ca = cl.channel('a');
