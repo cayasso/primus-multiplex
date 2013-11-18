@@ -407,7 +407,7 @@ describe('primus-multiplex', function (){
     var b = primus.channel('b');
     var count = 0;
     var ids = [];
-    reconnected = false;
+    var reconnected = false;
 
     srv.listen(function(){
       primus.on('connection', function (conn) {
