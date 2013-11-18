@@ -1,3 +1,5 @@
+'use strict';
+
 var Primus = require('primus');
 var PrimusMultiplex = require('../');
 var PrimusEmitter = require('primus-emitter');
