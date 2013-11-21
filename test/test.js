@@ -564,24 +564,6 @@ describe('primus-multiplex', function (){
         fn('thanks');
       });
     });
-
-    it('should work if emitter is initialized after multiplex', function (done) {
-        
-      primus.use('emitter', 'primus-emitter');
-
-      var a = primus.channel('a');
-      srv.listen(function () {
-        a.on('connection', function (spark) {
-          spark.send('msg', { hi: 'hello' });
-        });
-      });
-      var cl = client(srv, primus)
-        , cla = cl.channel('a');
-      cla.on('msg', function (msg) {
-        expect(msg).to.be.eql({ hi: 'hello' });
-        done();
-      });
-    });
   });
 
   describe('primus-rooms', function () {
@@ -685,11 +667,11 @@ describe('primus-multiplex', function (){
       });
 
       c4a.on('data', function (msg) {
-        finish(new Error('not'));
+        done(new Error('not'));
       });
 
-      function finish(error) {
-        if (1 > --total) done(error);
+      function finish() {
+        if (1 > --total) done();
       }
 
       setTimeout(function () {
@@ -740,11 +722,11 @@ describe('primus-multiplex', function (){
       });
 
       c4a.on('data', function (msg) {
-        finish(new Error('not'));
+        done(new Error('not'));
       });
 
-      function finish(error) {
-        if (1 > --total) done(error);
+      function finish() {
+        if (1 > --total) done();
       }
 
       setTimeout(function () {
@@ -798,11 +780,11 @@ describe('primus-multiplex', function (){
       });
 
       c4a.on('msg', function (msg) {
-        finish(new Error('not'));
+        done(new Error('not'));
       });
 
-      function finish(error) {
-        if (1 > --total) done(error);
+      function finish() {
+        if (1 > --total) done();
       }
 
       setTimeout(function () {
@@ -895,11 +877,11 @@ describe('primus-multiplex', function (){
       });
 
       c4a.on('msg', function (msg) {
-        finish(new Error('not'));
+        done(new Error('not'));
       });
 
-      function finish(error) {
-        if (1 > --total) done(error);
+      function finish() {
+        if (1 > --total) done();
       }
 
       setTimeout(function () {
@@ -1092,26 +1074,11 @@ describe('primus-multiplex', function (){
         });
       });
     });
-
-    it('should work if rooms is initialized after multiplex', function (done) {
-      primus.use('rooms', 'primus-rooms');
-
-      var a = primus.channel('a');
-      srv.listen(function () {
-        a.on('connection', function (spark) {
-          spark.join('a', function () {
-            done();
-          });
-        });
-      });
-      var cl = client(srv, primus)
-        , cla = cl.channel('a');
-    });
-  });  
+  });
 
   describe('primus-emitter + primus-rooms', function () {
 
-    it('should allow broadcasting a message to multiple rooms with emitter from channel;', function (done) {
+    it('should allow broadcasting a message to multiple rooms with emitter from channel', function (done) {
       
       primus.use('rooms', 'primus-rooms');
       primus.use('emitter', 'primus-emitter');
@@ -1159,11 +1126,11 @@ describe('primus-multiplex', function (){
       });
 
       c4a.on('msg', function (msg) {
-        finish(new Error('not'));
+        done(new Error('not'));
       });
 
-      function finish(error) {
-        if (1 > --total) done(error);
+      function finish() {
+        if (1 > --total) done();
       }
 
       setTimeout(function () {
@@ -1172,7 +1139,7 @@ describe('primus-multiplex', function (){
 
     });
 
-  it('should allow broadcasting a message to multiple rooms with emitter from client;', function (done) {
+  it('should allow broadcasting a message to multiple rooms with emitter from client', function (done) {
       
       primus.use('rooms', 'primus-rooms');
       primus.use('emitter', 'primus-emitter');
@@ -1221,11 +1188,11 @@ describe('primus-multiplex', function (){
 
       c4a.on('msg', function (msg) {
         expect(msg).to.be('hi');
-        finish();
+        done(new Error('not'));;
       });
 
-      function finish(error) {
-        if (1 > --total) done(error);
+      function finish() {
+        if (1 > --total) done();
       }
 
       setTimeout(function () {
