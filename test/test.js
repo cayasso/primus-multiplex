@@ -685,11 +685,11 @@ describe('primus-multiplex', function (){
       });
 
       c4a.on('data', function (msg) {
-        finish(new Error('not'));
+        done(new Error('not'));
       });
 
-      function finish(error) {
-        if (1 > --total) done(error);
+      function finish() {
+        if (1 > --total) done();
       }
 
       setTimeout(function () {
@@ -740,11 +740,11 @@ describe('primus-multiplex', function (){
       });
 
       c4a.on('data', function (msg) {
-        finish(new Error('not'));
+        done(new Error('not'));
       });
 
-      function finish(error) {
-        if (1 > --total) done(error);
+      function finish() {
+        if (1 > --total) done();
       }
 
       setTimeout(function () {
@@ -798,11 +798,11 @@ describe('primus-multiplex', function (){
       });
 
       c4a.on('msg', function (msg) {
-        finish(new Error('not'));
+        done(new Error('not'));
       });
 
-      function finish(error) {
-        if (1 > --total) done(error);
+      function finish() {
+        if (1 > --total) done();
       }
 
       setTimeout(function () {
@@ -895,11 +895,11 @@ describe('primus-multiplex', function (){
       });
 
       c4a.on('msg', function (msg) {
-        finish(new Error('not'));
+        done(new Error('not'));
       });
 
-      function finish(error) {
-        if (1 > --total) done(error);
+      function finish() {
+        if (1 > --total) done();
       }
 
       setTimeout(function () {
@@ -1107,11 +1107,11 @@ describe('primus-multiplex', function (){
       var cl = client(srv, primus)
         , cla = cl.channel('a');
     });
-  });  
+  });
 
   describe('primus-emitter + primus-rooms', function () {
 
-    it('should allow broadcasting a message to multiple rooms with emitter from channel;', function (done) {
+    it('should allow broadcasting a message to multiple rooms with emitter from channel', function (done) {
       
       primus.use('rooms', 'primus-rooms');
       primus.use('emitter', 'primus-emitter');
@@ -1159,11 +1159,11 @@ describe('primus-multiplex', function (){
       });
 
       c4a.on('msg', function (msg) {
-        finish(new Error('not'));
+        done(new Error('not'));
       });
 
-      function finish(error) {
-        if (1 > --total) done(error);
+      function finish() {
+        if (1 > --total) done();
       }
 
       setTimeout(function () {
@@ -1172,7 +1172,7 @@ describe('primus-multiplex', function (){
 
     });
 
-  it('should allow broadcasting a message to multiple rooms with emitter from client;', function (done) {
+  it('should allow broadcasting a message to multiple rooms with emitter from client', function (done) {
       
       primus.use('rooms', 'primus-rooms');
       primus.use('emitter', 'primus-emitter');
@@ -1221,11 +1221,11 @@ describe('primus-multiplex', function (){
 
       c4a.on('msg', function (msg) {
         expect(msg).to.be('hi');
-        finish();
+        done(new Error('not'));;
       });
 
-      function finish(error) {
-        if (1 > --total) done(error);
+      function finish() {
+        if (1 > --total) done();
       }
 
       setTimeout(function () {
