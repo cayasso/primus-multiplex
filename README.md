@@ -185,7 +185,7 @@ Each request to subscribe to a topic from a given client has a unique id.
 This makes it possible for a single client to open multiple independent
 channel connection to a single server-side service.
 
-Invalid messages are simple ignored.
+Invalid messages are simply ignored.
 
 It's important to notice that the namespace is shared between both
 parties and it is not a good idea to use the same topic names on the
