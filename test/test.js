@@ -240,7 +240,7 @@ describe('primus-multiplex', function (){
       function finish() {
         if (!--count) done();
       }
-      
+
       var cl = client(srv, primus)
         , cla = cl.channel('a')
         , clb = cl.channel('b')
@@ -744,6 +744,61 @@ describe('primus-multiplex', function (){
 
     });
 
+    it('should allow defining exception ids when broadcasting', function (done) {
+      primus.use('rooms', 'primus-rooms');
+      var a = primus.channel('a')
+        , total = 0
+        , sender
+        , except = [];
+
+      srv.listen(function () {
+
+        a.on('connection', function (spark) {
+          spark.on('data', function (data) {
+            if (/room1|room2/.test(data)) {
+              except.push(spark.id);
+            }          
+            if ('send' === data) {
+              sender = spark;
+            }
+            spark.join(data, function () {
+              if (4 === ++total) {
+                sender.room('room1 room2 room3').except(except).write('hi');
+              }
+            });
+          });
+        });
+
+        var cl = client(srv, primus)
+          , c1a = cl.channel('a')
+          , c2a = cl.channel('a')
+          , c3a = cl.channel('a')
+          , c4a = cl.channel('a');
+
+        c1a.on('data', function (msg) {
+          done(new Error('not'));
+        });
+
+        c2a.on('data', function (msg) {
+          done(new Error('not'));
+        });
+
+        c3a.on('data', function (msg) {
+          expect(msg).to.be('hi');
+          done();
+        });
+
+        c4a.on('data', function (msg) {
+          done(new Error('not'));
+        });
+        
+        c1a.write('room1');
+        c2a.write('room2');
+        c3a.write('room3');
+        c4a.write('send');
+      });
+    });
+
     it('should allow broadcasting a message to multiple clients with channel `send` method', function (done) {
       
       primus.use('emitter', 'primus-emitter');
@@ -941,7 +996,7 @@ describe('primus-multiplex', function (){
       });
     });
 
-    it('should remove spark form room using channel method', function (done) {
+    it('should remove spark from room using channel method', function (done) {
       primus.use('rooms', 'primus-rooms');
       var a = primus.channel('a');
 
@@ -958,6 +1013,109 @@ describe('primus-multiplex', function (){
         });
         var cl = client(srv, primus);
         cl.channel('a');
+      });
+    });
+
+    it('should check if a room is empty from spark', function (done) {
+      primus.use('rooms', 'primus-rooms');
+      var a = primus.channel('a')
+        , clients = []
+        , total = 0;
+      srv.listen(function () {
+        a.on('connection', function (spark) {
+          spark.join('room1', function () {
+            clients.push(spark);
+            if (3 === total++) {
+              clients.forEach(function (s) {
+                expect(spark.isRoomEmpty('room1')).to.be.eql(false);
+                s.leaveAll();
+              });
+              expect(spark.room('room1').isRoomEmpty()).to.be.eql(true);
+              done();
+            }
+          });
+        });
+        var cl = client(srv, primus);
+        cl.channel('a');
+        cl.channel('a');
+        cl.channel('a');
+        cl.channel('a');
+      });
+    });
+
+    it('should check if a room is empty from channel', function (done) {
+      primus.use('rooms', 'primus-rooms');
+      var a = primus.channel('a')
+        , clients = []
+        , total = 0;
+      srv.listen(function () {
+        a.on('connection', function (spark) {
+          spark.join('room1', function () {
+            clients.push(spark);
+            if (3 === total++) {
+              clients.forEach(function (s) {
+                expect(a.isRoomEmpty('room1')).to.be.eql(false);
+                s.leaveAll();
+              });
+              expect(a.in('room1').isRoomEmpty()).to.be.eql(true);
+              done();
+            }
+          });
+        });
+        var cl = client(srv, primus);
+        cl.channel('a');
+        cl.channel('a');
+        cl.channel('a');
+        cl.channel('a');
+      });
+    });
+
+    it('should return all rooms on channel', function (done) {
+      primus.use('rooms', 'primus-rooms');
+      var a = primus.channel('a');
+      srv.listen(function(){
+        a.on('connection', function(spark){
+          spark.join('a', function () {
+            spark.join('b', function () {
+              spark.leave('c', function () {
+                expect(a.rooms()).to.eql(['a', 'b']);
+                done();
+              });
+            });
+          });
+        });
+        client(srv, primus).channel('a');
+      });
+    });
+
+    it('should return all rooms of specific client from channel', function (done) {
+      primus.use('rooms', 'primus-rooms');
+      var a = primus.channel('a');
+      srv.listen(function () {
+        var first = true;
+        a.on('connection', function (spark) {
+          if (first) {
+            spark.join('a', function () {
+              spark.join('b', function () {
+                spark.leave('c', function () {
+                  expect(a.rooms(spark)).to.eql(['a', 'b']);
+                  client(srv, primus).channel('a');
+                });
+              });
+            });
+            first = false;
+          } else {
+            spark.join('d', function () {
+              spark.join('e', function () {
+                spark.leave('f', function () {
+                  expect(a.rooms(spark)).to.eql(['d', 'e']);
+                  done();
+                });
+              });
+            });
+          }
+        });
+        client(srv, primus).channel('a');
       });
     });
 
