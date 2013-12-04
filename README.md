@@ -174,9 +174,9 @@ Each message consists of an array of four parts: `type` (`Number`), `id` (`Strin
 
 There are three valid message types:
 
- * `Packet#MESSAGE` (`2`)  send a message with `payload` on a `topic`.
- * `Packet#SUBSCRIBE` (`3`) subscribe to a given `topic`.
- * `Packet#UNSUBSCRIBE` (`4`) unsubscribe from a `topic`.
+ * `Packet#MESSAGE` (`1`)  send a message with `payload` on a `topic`.
+ * `Packet#SUBSCRIBE` (`2`) subscribe to a given `topic`.
+ * `Packet#UNSUBSCRIBE` (`3`) unsubscribe from a `topic`.
 
 The `topic` identifies a channel registered on the server side.
 The `id` represent a unique connection identifier generated on the client side. 
@@ -185,7 +185,7 @@ Each request to subscribe to a topic from a given client has a unique id.
 This makes it possible for a single client to open multiple independent
 channel connection to a single server-side service.
 
-Invalid messages are simply ignored.
+Invalid messages are simple ignored.
 
 It's important to notice that the namespace is shared between both
 parties and it is not a good idea to use the same topic names on the
