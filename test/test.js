@@ -35,7 +35,7 @@ describe('primus-multiplex', function (){
 
   afterEach(function afterEach(done) {
     srv.close();
-    done();
+    setTimeout(done, 0);
   });
 
   it('should have required methods', function (done){
@@ -194,16 +194,20 @@ describe('primus-multiplex', function (){
 
       ca.on('data', function (data) {
         expect(data).to.be('hi a');
-        if (!--count) done();
+        finish();
       });
       cb.on('data', function (data) {
         expect(data).to.be('hi b');
-        if (!--count) done();
+        finish();
       });
       cc.on('data', function (data) {
         expect(data).to.be('hi c');
-        if (!--count) done();
+        finish();
       });
+
+      function finish() {
+        if (!--count) done();
+      }
     });
   });
 
@@ -217,21 +221,26 @@ describe('primus-multiplex', function (){
       a.on('connection', function (spark) {
         spark.on('data', function (data){
           expect(data).to.be('hi');
-          if (!--count) done();
+          finish();
         });
       });
       b.on('connection', function (spark) {
         spark.on('data', function (data){
           expect(data).to.be('hi');
-          if (!--count) done();
+          finish();
         });
       });
       c.on('connection', function (spark) {
         spark.on('data', function (data){
           expect(data).to.be('hi');
-          if (!--count) done();
+          finish();
         });
       });
+
+      function finish() {
+        if (!--count) done();
+      }
+      
       var cl = client(srv, primus)
         , cla = cl.channel('a')
         , clb = cl.channel('b')
