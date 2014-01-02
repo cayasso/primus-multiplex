@@ -1,6 +1,6 @@
 {
   "name": "primus-multiplex",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Simple multiplexing for Primus",
   "author": "Jonathan Brumley <cayasso@gmail.com>",
   "homepage": "https://github.com/cayasso/primus-multiplex",
