@@ -36,7 +36,7 @@
     "expect.js": "*",
     "ws": "~0.4.27",
     "primus": "git://github.com/primus/primus.git",
-    "primus-emitter": "~2.x",
+    "primus-emitter": "~2.1.x",
     "primus-rooms": "~3.x"
   }
 }
