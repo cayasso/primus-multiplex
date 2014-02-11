@@ -10,14 +10,12 @@ var Primus = require('primus')
   , srv;
 
 // creates the client
-function client(srv, primus, port, address){
-  var addr = srv.address() || {};
-
-  address = address || addr.address;
-  port = port || addr.port;
-
-  var url = 'http://' + address + ':' + port;
-  return new primus.Socket(url);
+function client(srv, primus, options){
+  var addr = srv.address() || {}
+    , address = addr.address || 'localhost'
+    , port = addr.port || 8080
+    , url = 'http://' + address + ':' + port;
+  return new primus.Socket(url, options);
 }
 
 // creates the server
@@ -85,7 +83,7 @@ describe('primus-multiplex', function (){
       srv.listen(8080);
     }, 0);
 
-    var cl = client(srv, primus, 8080, 'localhost');
+    var cl = client(srv, primus);
     var ca = cl.channel('a');
   });
 
@@ -445,7 +443,6 @@ describe('primus-multiplex', function (){
           }
         });
         b.on('connection', function (spark) {
-
           if (!reconnected) {
             ++count;
             ids.push(spark.id);
@@ -476,7 +473,7 @@ describe('primus-multiplex', function (){
       });
     });
 
-    var cl = client(srv, primus)
+    var cl = client(srv, primus, { strategy: false })
       , cla1 = cl.channel('a')
       , cla2 = cl.channel('a')
       , clb1 = cl.channel('b')
@@ -512,6 +509,8 @@ describe('primus-multiplex', function (){
 
     cla.on('reconnect', function () {
       expect(reconnecting).to.be(true);
+      cl.end();
+      cla.end();
       done();
     });
 
@@ -1169,41 +1168,35 @@ describe('primus-multiplex', function (){
     it('should trigger `leaveroom` event when leaving room', function (done) {
       primus.use('rooms', 'primus-rooms');
       var a = primus.channel('a');
-
       srv.listen(function(){
         a.on('connection', function(spark){
           spark.join('room1', function () {
             spark.leave('room1');
             spark.on('leaveroom', function (room) {
               expect(room).to.be.eql('room1');
-              done();
+              a.empty(done);
             });
           });
         });
-
         var cl = client(srv, primus);
         cl.channel('a');
       });
     });
 
     it('should trigger `leaveallrooms` events on client disconnect', function (done) {
-      this.timeout(0);
       primus.use('rooms', 'primus-rooms');
       var a = primus.channel('a');
-
-      srv.listen(function(){
-        a.on('connection', function(spark){
-          spark.join('a');
-          spark.on('leaveallrooms', function (rooms) {
-            expect(rooms).to.be.eql(['a']);
+      srv.listen(function () {
+        a.on('connection', function (spark) { 
+          spark.join('a'); 
+          a.on('leaveallrooms', function (rooms, spark) {
             done();
           });
           spark.write('end');
         });
 
-        var cl = client(srv, primus)
+        var cl = client(srv, primus, { strategy: false })
           , cla = cl.channel('a');
-
         cla.on('data', function (data) {
           if ('end' === data) cla.end();
         });
@@ -1248,29 +1241,6 @@ describe('primus-multiplex', function (){
       });
     });
 
-    it('should trigger `leaveallrooms` events on client disconnect when listening on channel', function (done) {
-      this.timeout(0);
-      primus.use('rooms', 'primus-rooms');
-      var a = primus.channel('a');
-      srv.listen(function(){
-        a.on('connection', function(spark){
-          a.join(spark, 'a');
-          a.on('leaveallrooms', function (rooms, socket) {
-            expect(rooms).to.be.eql(['a']);
-            expect(spark).to.be.eql(socket);
-            done();
-          });
-          spark.write('end');
-        });
-
-        var cl = client(srv, primus)
-          , cla = cl.channel('a');
-
-        cla.on('data', function (data) {
-          if ('end' === data) cla.end();
-        });
-      });
-    });
   });
 
   describe('primus-emitter + primus-rooms', function () {
