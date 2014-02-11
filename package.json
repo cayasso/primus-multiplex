@@ -28,7 +28,8 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "predefine": "0.0.1"
+    "predefine": "0.0.1",
+    "eventemitter3": "~0.1.1"
   },
   "devDependencies": {
     "mocha": "*",

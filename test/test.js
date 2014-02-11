@@ -2,7 +2,7 @@
 
 var Primus = require('primus')
   , multiplex = require('../')
-  , EventEmitter = require('events').EventEmitter
+  , EventEmitter = require('eventemitter3')
   , http = require('http').Server
   , expect = require('expect.js')
   , opts = { transformer: 'websockets', parser: 'JSON' }
