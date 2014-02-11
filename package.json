@@ -1,6 +1,6 @@
 {
   "name": "primus-multiplex",
-  "version": "2.2.2",
+  "version": "3.0.0",
   "description": "Simple multiplexing for Primus",
   "author": "Jonathan Brumley <cayasso@gmail.com>",
   "homepage": "https://github.com/cayasso/primus-multiplex",
@@ -36,7 +36,7 @@
     "expect.js": "*",
     "ws": "~0.4.27",
     "primus": "git://github.com/primus/primus.git",
-    "primus-emitter": "git://github.com/cayasso/primus-emitter.git",
-    "primus-rooms": "git://github.com/cayasso/primus-rooms.git"
+    "primus-emitter": "~2.x",
+    "primus-rooms": "~3.x"
   }
 }
