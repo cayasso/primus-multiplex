@@ -6,7 +6,12 @@
 Node.JS module that adds mutiplexing to [Primus](https://github.com/3rd-Eden/primus).
 
 ## Compatibility
-####This project is currently compatible with the 1.+ versions of Primus, it is not compatible with the latest [2.0.+ release](https://github.com/primus/primus/releases/tag/2.0.0), changes are in the works for getting all plugins aligned with the latest Primus. Stay tuned!!!####
+
+`primus-multiplex@3.x.x` is now compatible with [primus@2.x.x](https://github.com/primus/primus/releases/tag/2.0.0) series, if for some reason you need to continue using an old version of `primus` then you can always go back and install a previous version of `primus-multiplex` like so:
+
+```bash
+$ npm install primus-multiplex@2.2.2
+```
 
 ## Instalation
 
