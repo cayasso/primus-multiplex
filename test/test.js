@@ -243,6 +243,7 @@ describe('primus-multiplex', function (){
         , cla = cl.channel('a')
         , clb = cl.channel('b')
         , clc = cl.channel('c');
+
       cla.write('hi');
       clb.write('hi');
       clc.write('hi');
