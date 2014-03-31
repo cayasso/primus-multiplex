@@ -60,7 +60,7 @@ describe('primus-multiplex', function (){
     srv.listen();
   });
 
-  it('should stablish a connection', function (done) {
+  it('should establish a connection', function (done) {
     this.timeout(0);
 
     var a = primus.channel('a');
@@ -85,6 +85,36 @@ describe('primus-multiplex', function (){
 
     var cl = client(srv, primus);
     var ca = cl.channel('a');
+  });
+
+  it('should create channel dynamically and fire subscribe', function (done) {
+    primus.on('connection', function(spark) {
+      spark.on('subscribe', function(channelName, channelSpark) {
+        expect(channelName).to.be('a');
+        expect(channelSpark).to.be.ok();
+        done();
+      });
+    });
+    srv.listen();
+
+    var cl = client(srv, primus);
+    cl.channel('a');
+  });
+
+  it('should fire unsubscribe upon close', function (done) {
+    primus.on('connection', function(spark) {
+      spark.on('subscribe', function(channelName, channelSpark) {
+        spark.on('unsubscribe', function(channelName, channelSpark) {
+          expect(channelName).to.be('a');
+          expect(channelSpark).to.be.ok();
+          done();
+        });
+      });
+    });
+    srv.listen();
+
+    var cl = client(srv, primus);
+    cl.channel('a').end();
   });
 
   it('should allow sending message from client to server', function (done) {
