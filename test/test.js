@@ -60,6 +60,19 @@ describe('primus-multiplex', function (){
     srv.listen();
   });
 
+  it('should get spark by id', function (done) {
+    var a = primus.channel('a');
+    srv.listen(function () {
+      a.on('connection', function (spark) {
+        var conn = a.spark(spark.id);
+        expect(spark).to.equal(conn);
+        done();
+      });
+      var cl = client(srv, primus)
+        , ca = cl.channel('a');
+    });
+  });
+
   it('should stablish a connection', function (done) {
     this.timeout(0);
     
