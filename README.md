@@ -1,7 +1,7 @@
 # Primus Multiplex
 
-[![Build Status](https://travis-ci.org/cayasso/primus-multiplex.png?branch=master)](https://travis-ci.org/cayasso/primus-multiplex)
-[![NPM version](https://badge.fury.io/js/primus-multiplex.png)](http://badge.fury.io/js/primus-multiplex)
+[![Build Status](https://travis-ci.org/cayasso/primus-multiplex.svg?branch=master)](https://travis-ci.org/cayasso/primus-multiplex)
+[![NPM version](https://badge.fury.io/js/primus-multiplex.svg)](http://badge.fury.io/js/primus-multiplex)
 
 Node.JS module that adds mutiplexing to [Primus](https://github.com/3rd-Eden/primus).
 
@@ -36,7 +36,7 @@ primus.use('multiplex', multiplex);
 
 var news = primus.channel('news');
 news.on('connection', function (spark) {
-  
+
   spark.write('hi from the news channel');
 
   spark.on('data', function (data) {
@@ -47,7 +47,7 @@ news.on('connection', function (spark) {
 
 var sport = primus.channel('sport');
 sport.on('connection', function (spark) {
-  
+
   spark.write('hi from the sport channel');
 
   spark.on('data', function (data) {
@@ -104,7 +104,7 @@ news.write(message);
 
 #### channel.forEach(fn)
 
-Iterare over all `Sparks` in a channel. This could also be used 
+Iterare over all `Sparks` in a channel. This could also be used
 for broadcasting to specific `Sparks`.
 
 ```javascript
@@ -133,7 +133,7 @@ news.on('connection', function (spark) {
 });
 
 news.on('close', function () {
-  console.log('channel was destroyed');  
+  console.log('channel was destroyed');
 });
 ```
 
@@ -187,7 +187,7 @@ There are three valid message types:
  * `Packet#UNSUBSCRIBE` (`3`) unsubscribe from a `topic`.
 
 The `topic` identifies a channel registered on the server side.
-The `id` represent a unique connection identifier generated on the client side. 
+The `id` represent a unique connection identifier generated on the client side.
 
 Each request to subscribe to a topic from a given client has a unique id.
 This makes it possible for a single client to open multiple independent
