@@ -13,7 +13,7 @@ Node.JS module that adds mutiplexing to [Primus](https://github.com/3rd-Eden/pri
 $ npm install primus-multiplex@2.2.2
 ```
 
-## Instalation
+## Installation
 
 ```
 $ npm install primus-multiplex
