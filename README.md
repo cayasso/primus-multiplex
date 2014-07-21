@@ -74,10 +74,10 @@ sport.write('hi sport channel');
 
 // Receive message
 news.on('data', function (msg) {
-    console.log(msg);
+  console.log(msg);
 });
 sport.on('data', function (msg) {
-    console.log(msg);
+  console.log(msg);
 });
 ```
 
@@ -149,7 +149,7 @@ news.on('connection', function (spark) {
 
 ### Client
 
-#### spark.write(message)
+#### channel.write(message)
 
 Send a message to the server.
 
@@ -157,7 +157,7 @@ Send a message to the server.
 news.write('hi server');
 ```
 
-#### spark.end()
+#### channel.end()
 
 Disconnect from a channel.
 
@@ -166,11 +166,11 @@ var news = primus.channel('news');
 news.end();
 ```
 
-#### spark.on('data', fn)
+#### channel.on('data', fn)
 Receive `data` from the server form the corresponding `channel`.
 
 ```javascript
-spark.on('data', function(msg) {
+news.on('data', function(msg) {
   console.log('Received message from news channel', msg);
 });
 ```
