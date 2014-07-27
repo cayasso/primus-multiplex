@@ -182,9 +182,9 @@ Each message consists of an array of four parts: `type` (`Number`), `id` (`Strin
 
 There are three valid message types:
 
- * `Packet#MESSAGE` (`1`)  send a message with `payload` on a `topic`.
- * `Packet#SUBSCRIBE` (`2`) subscribe to a given `topic`.
- * `Packet#UNSUBSCRIBE` (`3`) unsubscribe from a `topic`.
+ * `Packet#MESSAGE` (`0`)  send a message with `payload` on a `topic`.
+ * `Packet#SUBSCRIBE` (`1`) subscribe to a given `topic`.
+ * `Packet#UNSUBSCRIBE` (`2`) unsubscribe from a `topic`.
 
 The `topic` identifies a channel registered on the server side.
 The `id` represent a unique connection identifier generated on the client side.
