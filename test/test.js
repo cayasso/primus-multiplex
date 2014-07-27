@@ -73,9 +73,7 @@ describe('primus-multiplex', function (){
     });
   });
 
-  it('should stablish a connection', function (done) {
-    this.timeout(0);
-
+  it('should establish a connection', function (done) {
     var a = primus.channel('a');
     srv.listen(function () {
       a.on('connection', function (spark) {
@@ -87,7 +85,6 @@ describe('primus-multiplex', function (){
   });
 
   it('should only emit one connection when client is started before server', function (done) {
-    this.timeout(0);
     setTimeout(function () {
       var a = primus.channel('a');
       a.on('connection', function (spark) {
@@ -101,8 +98,6 @@ describe('primus-multiplex', function (){
   });
 
   it('should allow sending message from client to server', function (done) {
-    this.timeout(0);
-
     var a = primus.channel('a');
     srv.listen(function () {
       a.on('connection', function (spark) {
@@ -118,8 +113,6 @@ describe('primus-multiplex', function (){
   });
 
   it('should allow sending message from server to client', function (done) {
-    this.timeout(0);
-
     var a = primus.channel('a');
     srv.listen(function () {
       a.on('connection', function (spark) {
@@ -135,8 +128,6 @@ describe('primus-multiplex', function (){
   });
 
   it('should not intercept regular socket connections on data', function (done) {
-    this.timeout(0);
-
     var a = primus.channel('a');
     srv.listen(function () {
       primus.on('connection', function (spark1) {
@@ -159,8 +150,6 @@ describe('primus-multiplex', function (){
   });
 
   it('should only receive data from corresponding client', function (done) {
-    this.timeout(0);
-
     var a = primus.channel('a');
     srv.listen(function () {
       a.on('connection', function (spark) {
@@ -181,8 +170,6 @@ describe('primus-multiplex', function (){
   });
 
   it('should only receive data from corresponding channel', function (done) {
-    this.timeout(0);
-
     var a = primus.channel('a')
       , b = primus.channel('b')
       , c = primus.channel('c')
@@ -954,8 +941,6 @@ describe('primus-multiplex', function (){
     });
 
     it('should allow broadcasting a message to multiple clients with emitter', function (done) {
-
-      this.timeout(0);
 
       primus.use('rooms', 'primus-rooms');
       primus.use('emitter', 'primus-emitter');
