@@ -28,15 +28,16 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "predefine": "0.0.1",
-    "eventemitter3": "~0.1.1"
+    "eventemitter3": "^0.1.5",
+    "predefine": "^0.1.1"
   },
   "devDependencies": {
-    "mocha": "*",
     "expect.js": "*",
-    "ws": "~0.4.27",
+    "mocha": "*",
+    "pre-commit": "0.0.9",
     "primus": "git://github.com/primus/primus.git",
-    "primus-emitter": "~3.x.x",
-    "primus-rooms": "~3.x.x"
+    "primus-emitter": "^3.0.3",
+    "primus-rooms": "^3.1.0",
+    "ws": "^0.4.32"
   }
 }
