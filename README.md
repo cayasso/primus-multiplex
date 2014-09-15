@@ -125,6 +125,7 @@ news.on('connection', function (spark) {
 ```
 
 #### channel.on('close', fn)
+
 Triggers when the destroy method is called.
 
 ```javascript
@@ -172,6 +173,37 @@ Receive `data` from the server form the corresponding `channel`.
 ```javascript
 news.on('data', function(msg) {
   console.log('Received message from news channel', msg);
+});
+```
+
+### Events on main Spark (Server)
+
+There are two usefull events that will be triggered on the main primus `Spark` object, these events can be very usefull for handling dynamic subscriptions, subscription notifications, etc.
+
+#### spark.on('subscribe', fn)
+
+Triggers when a connection is subscribed to a channel. Callback will return with `channel` object
+and its `spark` object.
+
+```javascript
+primus.on('connection', function(spark) {
+  spark.on('subscribe', function(channel, channelSpark) {
+    console.log('spark %s subscribed to channel %s', channelSpark.id, channel.name);
+    // do stuff with the channel spark
+  });
+});
+```
+#### spark.on('unsubscribe', fn)
+
+Triggers when connection is unsubscribed from a channel. Callback will return the `channel` object
+and its `spark` object.
+
+```javascript
+primus.on('connection', function(spark) {
+  spark.on('unsubscribe', function(channel, channelSpark) {
+    console.log('spark %s unsubscribed from channel %s', channelSpark.id, channel.name);
+    // channel spark is about to die
+  });
 });
 ```
 
