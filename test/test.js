@@ -142,7 +142,7 @@ describe('primus-multiplex', function (){
     srv.listen();
 
     var cl = client(srv, primus);
-    
+
     cl.channel('a');
   });
 
@@ -394,7 +394,7 @@ describe('primus-multiplex', function (){
       var expectedReadyState = 1;
       cla.on('readyStateChange', function () {
         expect(cla.readyState).to.be(expectedReadyState);
-        if(cla.readyState == 3) return done();
+        if (cla.readyState === 3) return done();
         expectedReadyState = 3;
       });
     });
@@ -1421,7 +1421,7 @@ describe('primus-multiplex', function (){
 
       c4a.on('msg', function (msg) {
         expect(msg).to.be('hi');
-        done(new Error('not'));;
+        done(new Error('not'));
       });
 
       function finish() {
