@@ -178,7 +178,7 @@ news.on('data', function(msg) {
 
 ### Events on main Spark (Server)
 
-There are two usefull events that will be triggered on the main primus `Spark` object, these events can be very usefull for handling dynamic subscriptions, subscription notifications, etc.
+There are two useful events that will be triggered on the main primus `Spark` object, these events can be very usefull for handling dynamic subscriptions, subscription notifications, etc.
 
 #### spark.on('subscribe', fn)
 
