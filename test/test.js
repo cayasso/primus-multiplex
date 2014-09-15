@@ -97,6 +97,55 @@ describe('primus-multiplex', function (){
     var ca = cl.channel('a');
   });
 
+  it('should create channel dynamically and fire subscribe', function (done) {
+    primus.on('connection', function(spark) {
+      spark.on('subscribe', function(channel, channelSpark) {
+        expect(channel.name).to.be('a');
+        expect(channelSpark).to.be.ok();
+        done();
+      });
+    });
+    srv.listen();
+
+    var cl = client(srv, primus);
+    cl.channel('a');
+  });
+
+  it('should fire unsubscribe upon client close', function (done) {
+    primus.on('connection', function(spark) {
+      spark.on('subscribe', function(channel, channelSpark) {
+        spark.on('unsubscribe', function(channel, channelSpark) {
+          expect(channel.name).to.be('a');
+          expect(channelSpark).to.be.ok();
+          done();
+        });
+      });
+    });
+    srv.listen();
+
+    var cl = client(srv, primus);
+
+    cl.channel('a').end();
+  });
+
+  it('should fire unsubscribe upon spark close', function (done) {
+    primus.on('connection', function(spark) {
+      spark.on('subscribe', function(channel, channelSpark) {
+        spark.on('unsubscribe', function(channel, channelSpark) {
+          expect(channel.name).to.be('a');
+          expect(channelSpark).to.be.ok();
+          done();
+        });
+        spark.end();
+      });
+    });
+    srv.listen();
+
+    var cl = client(srv, primus);
+    
+    cl.channel('a');
+  });
+
   it('should allow sending message from client to server', function (done) {
     var a = primus.channel('a');
     srv.listen(function () {
