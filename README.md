@@ -1,7 +1,7 @@
 # Primus Multiplex
 
-[![Build Status](https://travis-ci.org/cayasso/primus-multiplex.svg?branch=master)](https://travis-ci.org/cayasso/primus-multiplex)
-[![NPM version](https://badge.fury.io/js/primus-multiplex.svg)](http://badge.fury.io/js/primus-multiplex)
+[![Build Status](https://img.shields.io/travis/cayasso/primus-multiplex/master.svg)](https://travis-ci.org/cayasso/primus-multiplex)
+[![NPM version](https://img.shields.io/npm/v/primus-multiplex.svg)](https://www.npmjs.com/package/primus-multiplex)
 
 Node.JS module that adds mutiplexing to [Primus](https://github.com/3rd-Eden/primus).
 
