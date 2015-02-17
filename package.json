@@ -6,8 +6,7 @@
   "homepage": "https://github.com/cayasso/primus-multiplex",
   "main": "index.js",
   "scripts": {
-    "test": "make test",
-    "build": "make build"
+    "test": "make test"
   },
   "repository": {
     "type": "git",
@@ -34,10 +33,10 @@
   "devDependencies": {
     "expect.js": "*",
     "mocha": "*",
-    "pre-commit": "0.0.9",
-    "primus": "git://github.com/primus/primus.git",
+    "pre-commit": "^1.0.4",
+    "primus": "^2.4.12",
     "primus-emitter": "^3.0.3",
     "primus-rooms": "^3.1.0",
-    "ws": "^0.6.3"
+    "ws": "^0.7.1"
   }
 }
