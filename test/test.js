@@ -345,7 +345,7 @@ describe('primus-multiplex', function (){
         'online',
         'offline',
         'reconnect',
-        'reconnecting',
+        'reconnect scheduled',
         'readyStateChange'
       ];
 
@@ -494,7 +494,8 @@ describe('primus-multiplex', function (){
       , cla = cl.channel('a');
   });
 
-  it('should emit `disconnection` event on all connected sparks when main connection closes on client', function (done) {
+  it('should emit `disconnection` event on all connected sparks when main ' +
+    ' connection closes on client', function (done) {
 
     var a = primus.channel('a')
       , b = primus.channel('b')
@@ -515,17 +516,7 @@ describe('primus-multiplex', function (){
             ++count;
             ids.push(spark.id);
             if (count >= 4) {
-
-              // Forcefully kill a connection to trigger a reconnect
-              switch (opts.transformer.toLowerCase()) {
-                case 'socket.io':
-                  primus.transformer.service.transports[conn.id].close();
-                break;
-
-                default:
-                  conn.emit('outgoing::end');
-              }
-
+              spark.conn.end(undefined, { reconnect: true });
               reconnected = true;
             }
           }
@@ -548,7 +539,8 @@ describe('primus-multiplex', function (){
       , clb2 = cl.channel('b');
   });
 
-  it('should emit `reconnect` and `reconnecting` event when the main connection closes unexcpectingly', function (done) {
+  it('should emit `reconnect` and `reconnecting` event when the main ' +
+   'connection closes unexcpectingly', function (done) {
 
     var a = primus.channel('a')
       , reconnected = false
@@ -558,16 +550,7 @@ describe('primus-multiplex', function (){
       a.on('connection', function (spark) {
         if (!reconnected) {
           reconnected = true;
-
-          // Forcefully kill a connection to trigger a reconnect
-          switch (opts.transformer.toLowerCase()) {
-            case 'socket.io':
-              primus.transformer.service.transports[spark.conn.id].close();
-            break;
-
-            default:
-              spark.conn.emit('outgoing::end');
-          }
+          spark.conn.end(undefined, { reconnect: true });
         }
       });
     });
@@ -582,7 +565,7 @@ describe('primus-multiplex', function (){
       done();
     });
 
-    cla.on('reconnecting', function () {
+    cla.on('reconnect scheduled', function () {
       reconnecting = true;
     });
   });
