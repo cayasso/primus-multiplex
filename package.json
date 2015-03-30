@@ -34,7 +34,7 @@
     "expect.js": "*",
     "mocha": "*",
     "pre-commit": "^1.0.4",
-    "primus": "^2.4.12",
+    "primus": "^3.0.2",
     "primus-emitter": "^3.0.3",
     "primus-rooms": "^3.1.0",
     "ws": "^0.7.1"
