@@ -339,37 +339,30 @@ describe('primus-multiplex', function (){
   });
 
   describe('cleaning up client events', function () {
-    var EVENTS = [
-        'error',
-        'open',
-        'online',
-        'offline',
-        'reconnect',
-        'reconnect scheduled',
-        'readyStateChange'
-      ];
+    Object.keys(Primus.createSocket().prototype.reserved.events).forEach(function (ev) {
+      if ('data' === ev || 'end' === ev) return;
 
-    EVENTS.forEach(function createTest(event) {
-      it('should remove the ' + event + ' listener when client disconnects', function (done) {
-        var a = primus.channel('a');
+      it('should remove the ' + ev + ' listener when client disconnects', function (done) {
         srv.listen(function () {
-          a.on('disconnection', function (spark) {
-            expect(cl.listeners(event)).to.have.length(eventCount);
+          var a = primus.channel('a');
+
+          a.on('disconnection', function () {
+            expect(cl.listeners(ev)).to.have.length(eventCount);
 
             done();
           });
+
+          var cl = client(srv, primus)
+            , eventCount = cl.listeners(ev).length
+            , ca = cl.channel('a');
+
+          ca.end();
         });
-
-        var cl = client(srv, primus)
-          , eventCount = cl.listeners(event).length
-          , ca = cl.channel('a');
-
-        ca.end();
       });
     });
   });
 
-  it('should `emit` close event when destroying a channel', function (done) {
+  it('should emit `close` event when destroying a channel', function (done) {
     var a = primus.channel('a');
     srv.listen(function () {
       a.on('connection', function (spark) {
@@ -383,7 +376,7 @@ describe('primus-multiplex', function (){
     });
   });
 
-  it('should `emit` readyStateChange event when readyState changes', function (done) {
+  it('should emit `readyStateChange` event when readyState changes', function (done) {
     var a = primus.channel('a');
     srv.listen(function () {
       var cl = client(srv, primus)
@@ -414,7 +407,8 @@ describe('primus-multiplex', function (){
       });
       var cl = client(srv, primus)
         , cla = cl.channel('a');
-      cla.on('data', function (data){
+      cla.on('data', function (data) {
+        expect(data).to.be('hi');
         done();
       });
     });
