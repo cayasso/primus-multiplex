@@ -3,15 +3,7 @@
 [![Build Status](https://img.shields.io/travis/cayasso/primus-multiplex/master.svg)](https://travis-ci.org/cayasso/primus-multiplex)
 [![NPM version](https://img.shields.io/npm/v/primus-multiplex.svg)](https://www.npmjs.com/package/primus-multiplex)
 
-Node.JS module that adds mutiplexing to [Primus](https://github.com/3rd-Eden/primus).
-
-## Compatibility
-
-`primus-multiplex@3.x.x` is now compatible with [primus@2.x.x](https://github.com/primus/primus/releases/tag/2.0.0) series, if for some reason you need to continue using an old version of `primus` then you can always go back and install a previous version of `primus-multiplex` like so:
-
-```bash
-$ npm install primus-multiplex@2.2.2
-```
+Node.JS module that adds mutiplexing to [Primus](https://github.com/primus/primus).
 
 ## Installation
 
