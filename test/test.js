@@ -13,8 +13,10 @@ var Primus = require('primus')
 function client(srv, primus, options){
   var addr = srv.address() || {}
     , address = addr.address || 'localhost'
-    , port = addr.port || 8080
-    , url = 'http://' + address + ':' + port;
+    , port = addr.port || 8080;
+  // Node 0.12 IPv6 fix
+  if (address === '::') address = 'localhost';
+  var url = 'http://' + address + ':' + port;
   return new primus.Socket(url, options);
 }
 
