@@ -12,9 +12,8 @@ var Primus = require('primus')
 // creates the client
 function client(srv, primus, options){
   var addr = srv.address() || {}
-    , address = addr.address || 'localhost'
     , port = addr.port || 8080
-    , url = 'http://' + address + ':' + port;
+    , url = 'http://localhost:' + port;
   return new primus.Socket(url, options);
 }
 
@@ -25,10 +24,9 @@ function server(srv, opts) {
 
 describe('primus-multiplex', function (){
 
-  beforeEach(function beforeEach(done) {
+  beforeEach(function beforeEach() {
     srv = http();
     primus = server(srv, opts);
-    done();
   });
 
   afterEach(function afterEach(done) {
@@ -531,6 +529,34 @@ describe('primus-multiplex', function (){
       , cla2 = cl.channel('a')
       , clb1 = cl.channel('b')
       , clb2 = cl.channel('b');
+  });
+
+  // See https://github.com/cayasso/primus-multiplex/issues/21
+  it('should automatically close child sparks even if channel name ' +
+    'is complex,', function(done) {
+      var a = primus.channel('a:complex:name')
+        , count = 0
+        , ids = []
+
+      srv.listen(function () {
+        primus.on('connection', function (conn) {
+          a.on('connection', function (spark) {
+            ++count;
+            ids.push(spark.id);
+            if (count >= 2) {
+              spark.conn.end(undefined, { reconnect: false });
+            }
+          });
+          a.on('disconnection', function (spark) {
+            expect(ids).to.contain(spark.id);
+            if (!--count) done();
+          });
+        });
+      });
+
+      var cl = client(srv, primus, { strategy: false })
+        , cla1 = cl.channel('a:complex:name')
+        , cla2 = cl.channel('a:complex:name');
   });
 
   it('should emit `reconnect` and `reconnecting` event when the main ' +
