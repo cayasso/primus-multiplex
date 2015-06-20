@@ -12,11 +12,8 @@ var Primus = require('primus')
 // creates the client
 function client(srv, primus, options){
   var addr = srv.address() || {}
-    , address = addr.address || 'localhost'
-    , port = addr.port || 8080;
-  // Node 0.12 IPv6 fix
-  if (address === '::') address = 'localhost';
-  var url = 'http://' + address + ':' + port;
+    , port = addr.port || 8080
+    , url = 'http://localhost:' + port;
   return new primus.Socket(url, options);
 }
 
@@ -27,10 +24,9 @@ function server(srv, opts) {
 
 describe('primus-multiplex', function (){
 
-  beforeEach(function beforeEach(done) {
+  beforeEach(function beforeEach() {
     srv = http();
     primus = server(srv, opts);
-    done();
   });
 
   afterEach(function afterEach(done) {
