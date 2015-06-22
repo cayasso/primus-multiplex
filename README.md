@@ -160,7 +160,7 @@ news.end();
 ```
 
 #### channel.on('data', fn)
-Receive `data` from the server form the corresponding `channel`.
+Receive `data` from the server from the corresponding `channel`.
 
 ```javascript
 news.on('data', function(msg) {
@@ -170,7 +170,7 @@ news.on('data', function(msg) {
 
 ### Events on main Spark (Server)
 
-There are two useful events that will be triggered on the main primus `Spark` object, these events can be very usefull for handling dynamic subscriptions, subscription notifications, etc.
+There are two useful events that will be triggered on the main primus `Spark` object, that can be very usefull for handling dynamic subscriptions, subscription notifications, etc.
 
 #### spark.on('subscribe', fn)
 

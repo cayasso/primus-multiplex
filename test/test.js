@@ -374,6 +374,18 @@ describe('primus-multiplex', function (){
     });
   });
 
+  it('should emit `close` event on client when destroying a channel', function (done) {
+    var a = primus.channel('a');
+    srv.listen(function () {
+      a.on('connection', function (spark) {
+        a.destroy();
+      });
+      var cl = client(srv, primus)
+        , cla = cl.channel('a');
+      cla.on('close', done)
+    });
+  });
+
   it('should emit `readyStateChange` event when readyState changes', function (done) {
     var a = primus.channel('a');
     srv.listen(function () {
