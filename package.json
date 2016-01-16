@@ -31,12 +31,12 @@
     "predefine": "^0.1.2"
   },
   "devDependencies": {
-    "expect.js": "*",
-    "mocha": "*",
-    "pre-commit": "^1.0.10",
-    "primus": "^3.1.1",
-    "primus-emitter": "^3.1.0",
-    "primus-rooms": "^3.1.0",
-    "ws": "^0.7.2"
+    "expect.js": "^0.3.1",
+    "mocha": "^2.3.4",
+    "pre-commit": "^1.1.2",
+    "primus": "^4.0.5",
+    "primus-emitter": "^3.1.1",
+    "primus-rooms": "^3.3.0",
+    "ws": "^1.0.1"
   }
 }
