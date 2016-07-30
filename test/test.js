@@ -19,7 +19,7 @@ function client(srv, primus, options){
 
 // creates the server
 function server(srv, opts) {
-  return Primus(srv, opts).use('multiplex', multiplex);
+  return Primus(srv, opts).plugin('multiplex', multiplex);
 }
 
 describe('primus-multiplex', function (){
@@ -483,7 +483,7 @@ describe('primus-multiplex', function (){
     srv.listen();
 
     var sv = http()
-      , primus = Primus(sv, opts).use('multiplex', multiplex)
+      , primus = Primus(sv, opts).plugin('multiplex', multiplex)
       , a = primus.channel('a');
 
     sv.listen(function () {
@@ -605,7 +605,7 @@ describe('primus-multiplex', function (){
   describe('primus-emitter', function () {
 
     it('should play nice with emitter', function (done) {
-      primus.use('emitter', 'primus-emitter');
+      primus.plugin('emitter', 'primus-emitter');
       var a = primus.channel('a');
       srv.listen(function () {
         a.on('connection', function (spark) {
@@ -617,7 +617,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should allow sending message from server to client', function (done) {
-      primus.use('emitter', 'primus-emitter');
+      primus.plugin('emitter', 'primus-emitter');
       var a = primus.channel('a');
       srv.listen(function () {
         a.on('connection', function (spark) {
@@ -633,7 +633,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should allow sending message from client to server', function (done) {
-      primus.use('emitter', 'primus-emitter');
+      primus.plugin('emitter', 'primus-emitter');
       var a = primus.channel('a');
       srv.listen(function () {
         a.on('connection', function (spark) {
@@ -649,7 +649,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should support ack on the client', function (done) {
-      primus.use('emitter', 'primus-emitter');
+      primus.plugin('emitter', 'primus-emitter');
       var a = primus.channel('a');
       srv.listen(function () {
         a.on('connection', function (spark) {
@@ -668,7 +668,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should support ack on the server', function (done) {
-      primus.use('emitter', 'primus-emitter');
+      primus.plugin('emitter', 'primus-emitter');
       var a = primus.channel('a');
       srv.listen(function () {
         a.on('connection', function (spark) {
@@ -690,7 +690,7 @@ describe('primus-multiplex', function (){
   describe('primus-rooms', function () {
 
     it('should allow joining a room', function (done) {
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a');
       srv.listen(function(){
         a.on('connection', function (spark) {
@@ -704,7 +704,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should allow leaving a room', function (done) {
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a');
       srv.listen(function(){
         a.on('connection', function (spark) {
@@ -719,7 +719,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should allow broadcasting a message to a client', function (done) {
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a');
       srv.listen(function(){
         a.on('connection', function (spark) {
@@ -747,7 +747,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should allow broadcasting a message to multiple clients', function (done) {
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a')
         , total = 3;
 
@@ -802,7 +802,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should allow broadcasting a message to multiple clients with channel `write` method', function (done) {
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a')
         , total = 3;
 
@@ -857,7 +857,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should allow defining exception ids when broadcasting', function (done) {
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a')
         , total = 0
         , sender
@@ -913,8 +913,8 @@ describe('primus-multiplex', function (){
 
     it('should allow broadcasting a message to multiple clients with channel `send` method', function (done) {
 
-      primus.use('emitter', 'primus-emitter');
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('emitter', 'primus-emitter');
+      primus.plugin('rooms', 'primus-rooms');
 
       var a = primus.channel('a')
         , total = 3;
@@ -971,8 +971,8 @@ describe('primus-multiplex', function (){
 
     it('should allow broadcasting a message to a client with emitter', function (done) {
 
-      primus.use('emitter', 'primus-emitter');
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('emitter', 'primus-emitter');
+      primus.plugin('rooms', 'primus-rooms');
 
       var a = primus.channel('a');
 
@@ -1006,8 +1006,8 @@ describe('primus-multiplex', function (){
 
     it('should allow broadcasting a message to multiple clients with emitter', function (done) {
 
-      primus.use('rooms', 'primus-rooms');
-      primus.use('emitter', 'primus-emitter');
+      primus.plugin('rooms', 'primus-rooms');
+      primus.plugin('emitter', 'primus-emitter');
 
       var a = primus.channel('a')
         , total = 3;
@@ -1066,7 +1066,7 @@ describe('primus-multiplex', function (){
 
     it('should get all clients synchronously if no callback is provided using channel method', function (done) {
       var ids = [];
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a')
         , count = 0;
 
@@ -1089,7 +1089,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should join spark to a room using channel method', function (done) {
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a');
 
       srv.listen(function(){
@@ -1107,7 +1107,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should remove spark from room using channel method', function (done) {
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a');
 
       srv.listen(function(){
@@ -1127,7 +1127,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should check if a room is empty from spark', function (done) {
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a')
         , clients = []
         , total = 0;
@@ -1154,7 +1154,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should check if a room is empty from channel', function (done) {
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a')
         , clients = []
         , total = 0;
@@ -1181,7 +1181,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should return all rooms on channel', function (done) {
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a');
       srv.listen(function(){
         a.on('connection', function(spark){
@@ -1199,7 +1199,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should return all rooms of specific client from channel', function (done) {
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a');
       srv.listen(function () {
         var first = true;
@@ -1230,7 +1230,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should trigger `joinroom` event when joining room', function (done) {
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a');
 
       srv.listen(function(){
@@ -1247,7 +1247,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should trigger `leaveroom` event when leaving room', function (done) {
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a');
       srv.listen(function(){
         a.on('connection', function(spark){
@@ -1265,7 +1265,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should trigger `leaveallrooms` events on client disconnect', function (done) {
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a');
       srv.listen(function () {
         a.on('connection', function (spark) {
@@ -1285,7 +1285,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should trigger `joinroom` event when joining room using channel join method', function (done) {
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a');
       srv.listen(function(){
         a.on('connection', function(spark){
@@ -1303,7 +1303,7 @@ describe('primus-multiplex', function (){
     });
 
     it('should trigger `leaveroom` event when leaving room using channel leave method', function (done) {
-      primus.use('rooms', 'primus-rooms');
+      primus.plugin('rooms', 'primus-rooms');
       var a = primus.channel('a');
       srv.listen(function(){
         a.on('connection', function(spark){
@@ -1328,8 +1328,8 @@ describe('primus-multiplex', function (){
 
     it('should allow broadcasting a message to multiple rooms with emitter from channel', function (done) {
 
-      primus.use('rooms', 'primus-rooms');
-      primus.use('emitter', 'primus-emitter');
+      primus.plugin('rooms', 'primus-rooms');
+      primus.plugin('emitter', 'primus-emitter');
 
       var a = primus.channel('a')
         , total = 3;
@@ -1389,8 +1389,8 @@ describe('primus-multiplex', function (){
 
   it('should allow broadcasting a message to multiple rooms with emitter from client', function (done) {
 
-      primus.use('rooms', 'primus-rooms');
-      primus.use('emitter', 'primus-emitter');
+      primus.plugin('rooms', 'primus-rooms');
+      primus.plugin('emitter', 'primus-emitter');
 
       var a = primus.channel('a')
         , total = 3;
