@@ -24,7 +24,7 @@ var server = require('http').createServer();
 var primus = new Primus(server, { transformer: 'sockjs', parser: 'JSON' });
 
 // add multiplex to Primus
-primus.use('multiplex', multiplex);
+primus.plugin('multiplex', multiplex);
 
 var news = primus.channel('news');
 news.on('connection', function (spark) {
