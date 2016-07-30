@@ -1,79 +1,49 @@
-var Multiplex = require('../../../');
-var Primus = require('primus');
-var http = require('http');
-var server = http.createServer();
+'use strict';
 
-// THE SERVER
-var primus = new Primus(server, { transformer: 'websockets', parser: 'JSON' });
+const Primus = require('primus');
+const http = require('http');
 
-// Add multiplex functionality to primus
-primus
-.use('multiplex', Multiplex);
+const multiplex = require('../../../');
 
-var ann = primus.channel('ann');
-var bob = primus.channel('bob');
-var tom = primus.channel('tom');
+const server = http.createServer();
+const primus = new Primus(server);
 
-// Server stuff
-ann.on('connection', function(spark){
+// Add multiplex plugin
+primus.plugin('multiplex', multiplex);
+
+const ann = primus.channel('ann');
+const bob = primus.channel('bob');
+const tom = primus.channel('tom');
+
+ann.on('connection', (spark) => {
   console.log('connected to ann');
   spark.write('hi Ann');
-  // testing regular
 });
 
-// Server stuff
-bob.on('connection', function(spark){
+bob.on('connection', (spark) => {
   console.log('connected to bob');
   spark.write('hi Bob');
 });
 
-// Server stuff
-tom.on('connection', function(spark){
-  console.log('connected to tom', spark.id);
-
-  spark.on('data', function () {
-    console.log('data from tom as client', arguments);
-  });
-
-  setInterval(function () {
-    spark.write('hola Tom');
-  }, 3000);
+tom.on('connection', (spark) => {
+  console.log('connected to tom');
+  spark.on('data', (msg) => console.log('[TOM] <- %s', msg));
+  setInterval(() => spark.write('hola Tom'), 3000);
 });
 
+server.listen(() => {
+  const port = server.address().port;
+  console.log('listening on *:%d', port);
 
-// THE CLIENT
-function setClient () {
+  const socket = new primus.Socket(`http://localhost:${port}`);
 
-  var Socket = primus.Socket;
-  var socket = new Socket('ws://localhost:8080');
+  const ann = socket.channel('ann');
+  const bob = socket.channel('bob');
+  const tom = socket.channel('tom');
 
-  var ann = socket.channel('ann');
-  var bob = socket.channel('bob');
-  var tom = socket.channel('tom');
+  ann.on('data', (msg) => console.log('[ANN] -> %s', msg));
+  bob.on('data', (msg) => console.log('[BOB] -> %s', msg));
+  tom.on('data', (msg) => console.log('[TOM] -> %s', msg));
 
-  ann.on('data', function (msg) {
-    console.log('[ANN] ===> ' + msg);
-  });
-
-  tom.on('data', function (msg) {
-    console.log('[TOM] ===> ' + msg);
-  });
-
-  bob.on('data', function (msg) {
-    console.log('[BOB] ===> ' + msg);
-  });
-
-  setInterval(function () {
-    tom.write('hi');
-  }, 1000);
-
-}
-
-// Set first client
-setTimeout(function () {
-  setClient();
-}, 0);
-
-server.listen(process.env.PORT || 8080, function(){
-  console.log('\033[96mlistening on localhost:9000 \033[39m');
+  setInterval(() => tom.write('hi'), 1000);
 });

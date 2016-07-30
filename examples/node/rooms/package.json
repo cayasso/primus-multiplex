@@ -1,11 +1,12 @@
 {
-  "name": "primus-multiplex-basic-test",
+  "name": "primus-multiplex-rooms-test",
   "version": "0.0.0",
   "author": "Jonathan Brumley <cayasso@gmail.com>",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
     "primus": "^6.0.1",
+    "primus-rooms": "^3.4.1",
     "ws": "^1.1.1"
   }
 }

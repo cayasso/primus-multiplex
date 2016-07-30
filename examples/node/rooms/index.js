@@ -1,77 +1,49 @@
-var Multiplex = require('../../../');
-var Primus = require('primus');
-var Rooms = require('primus-rooms');
-var http = require('http');
-var server = http.createServer();
+'use strict';
 
-// THE SERVER
-var primus = new Primus(server, { transformer: 'websockets', parser: 'JSON' });
+const rooms = require('primus-rooms');
+const Primus = require('primus');
+const http = require('http');
 
-// Add multiplex functionality to primus
-primus
+const multiplex = require('../../../');
 
-.use('multiplex', Multiplex)
-.use('rooms', Rooms);
+const server = http.createServer();
+const primus = new Primus(server);
 
-var a = primus.channel('a');
+// Add plugins
+primus.plugin('multiplex', multiplex).plugin('rooms', rooms);
 
-// Server stuff
-a.on('connection', function(spark){
+const a = primus.channel('a');
 
-  // testing regular
-  spark.on('data', function(room){
-
-    // broadcasting to rooms
-    if (room === 'me') {
-      console.log('------- ------- -------');
-      spark.room('room1 room2 room3').write('- WELCOME -');
-      spark.leave(room);
-    } else {
-      // joining a room
-      spark.join(room, function () {
-        console.log('joining room ' + room);
-      });
+a.on('connection', (spark) => {
+  spark.on('data', (room) => {
+    if (room !== 'me') {
+      return spark.join(room, () => console.log('joined room %s', room));
     }
-  });
 
-  // testing regular
+    spark.room('room1 room2 room3').write('Welcome');
+  });
 });
 
+const client = (room) => {
+  const socket = new primus.Socket(`http://localhost:${server.address().port}`);
 
-
-
-// THE CLIENT
-function client (room) {
-
-  var Socket = primus.Socket;
-  var socket = new Socket('ws://localhost:8080');
-  var a = socket.channel('a');
+  const a = socket.channel('a');
 
   if (room === 'me') {
-    setInterval(function(){
-      a.write(room);
-    }, 3000);
+    setInterval(() => a.write(room), 3000);
   } else {
     a.write(room);
   }
 
-  // on data received
-  a.on('data', function (data) {
-    console.log('MSG:', data);
-  });
+  a.on('data', (data) => console.log(data));
+};
 
-}
+server.listen(() => {
+  console.log('listening on *:%d', server.address().port);
 
-// Set first client
-client('room1');
-client('room2');
-client('room3');
+  client('room1');
+  client('room2');
+  client('room3');
 
-
-setTimeout(function () {
-  client('me');
-}, 0);
-
-server.listen(process.env.PORT || 8080, function(){
-  console.log('\033[96mlistening on localhost: \033[39m');
+  setTimeout(() => client('me'), 10);
 });
