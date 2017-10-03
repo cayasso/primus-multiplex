@@ -113,6 +113,8 @@ describe('primus-multiplex', function (){
     primus.on('connection', function(spark) {
       spark.on('subscribe', function(channel, channelSpark) {
         spark.on('unsubscribe', function(channel, channelSpark) {
+          expect(channelSpark.conn.channels[channelSpark.id]).to.be(undefined);
+          expect(Object.keys(channelSpark.conn.channels).length).to.be(0);
           expect(channel.name).to.be('a');
           expect(channelSpark).to.be.ok();
           done();
@@ -499,7 +501,7 @@ describe('primus-multiplex', function (){
   });
 
   it('should emit `disconnection` event on all connected sparks when main ' +
-    ' connection closes on client', function (done) {
+     'connection closes on client', function (done) {
 
     var a = primus.channel('a')
       , b = primus.channel('b')
