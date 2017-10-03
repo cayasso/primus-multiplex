@@ -109,6 +109,20 @@ describe('primus-multiplex', function (){
     cl.channel('a');
   });
 
+
+  it('should have an id namespaced by its parent', function (done) {
+    primus.on('connection', function(spark) {
+      spark.on('subscribe', function(channel, channelSpark) {
+        expect(channelSpark.id).to.equal(spark.id + '_' + channelSpark.bareID);
+        done();
+      });
+    });
+    srv.listen();
+
+    var cl = client(srv, primus);
+    cl.channel('a');
+  });
+
   it('should fire unsubscribe upon client close', function (done) {
     primus.on('connection', function(spark) {
       spark.on('subscribe', function(channel, channelSpark) {
