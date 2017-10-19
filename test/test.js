@@ -110,10 +110,10 @@ describe('primus-multiplex', function (){
   });
 
 
-  it('should have an id namespaced by its parent', function (done) {
+  it('should have an id namespaced by its parent and channel name', function (done) {
     primus.on('connection', function(spark) {
       spark.on('subscribe', function(channel, channelSpark) {
-        expect(channelSpark.id).to.equal(spark.id + '_' + channelSpark.bareID);
+        expect(channelSpark.id).to.equal(spark.id + ':' + channelSpark.bareID + ':' + channel.name);
         done();
       });
     });

@@ -27,6 +27,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "escape-string-regexp": "^1.0.5",
     "eventemitter3": "1.2.x",
     "predefine": "0.1.x"
   },
