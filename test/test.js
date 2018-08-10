@@ -113,6 +113,7 @@ describe('primus-multiplex', function (){
     primus.on('connection', function(spark) {
       spark.on('subscribe', function(channel, channelSpark) {
         spark.on('unsubscribe', function(channel, channelSpark) {
+          // Expect internal storage to no longer contain this id
           expect(channelSpark.conn.channels[channelSpark.id]).to.be(undefined);
           expect(Object.keys(channelSpark.conn.channels).length).to.be(0);
           expect(channel.name).to.be('a');
